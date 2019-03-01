@@ -1,0 +1,44 @@
+{
+  "name": "maslow",
+  "version": "1.0.0",
+  "description": "A redux generic module creator for api stuff",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --config config.jest.json --coverage",
+    "test:dev": "jest --config config.jest.json --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timeforyouapp/maslow.git"
+  },
+  "keywords": [
+    "redux",
+    "react",
+    "react-redux",
+    "jest",
+    "es6",
+    "api"
+  ],
+  "author": "Guilherme Diego <guidiego.expgames@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/timeforyouapp/maslow/issues"
+  },
+  "homepage": "https://github.com/timeforyouapp/maslow#readme",
+  "dependencies": {
+    "react-redux": "^6.0.1",
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
+    "@babel/preset-env": "^7.3.4",
+    "babel-jest": "^24.1.0",
+    "coveralls": "^3.0.0",
+    "eslint": "^4.16.0",
+    "jest": "^24.1.0"
+  }
+}
