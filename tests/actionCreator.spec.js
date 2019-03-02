@@ -1,11 +1,16 @@
+
+import clone from 'fast-clone';
 import ActionCreator from '../src/actionCreator';
+import {
+    FAKE_TYPES,
+    FAKE_API,
+} from './_utils';
 
 describe('actionCreator', () => {
     const fakeName = 'Fake';
     const fakeEntry = 'fakeEntry';
     const fakeEntry2 = 'fakeEntry2';
 
-    let fakeDomainTypes = null;
     let fakeTypes = null;
     let fakeApi = null;
 
@@ -57,34 +62,12 @@ describe('actionCreator', () => {
     };
     
     beforeEach(() => {
-        fakeDomainTypes = {
-            success: 'success',
-            fetching: 'fetching',
-            error: 'error',
-        };
-    
-        fakeTypes = {
-            setAll: 'setAll',
-            set: 'set',
-            clearState: 'clearState',
-            getDetail: fakeDomainTypes,
-            getList: fakeDomainTypes,
-            update: fakeDomainTypes,
-            create: fakeDomainTypes,
-            delete: fakeDomainTypes,
-        };
-    
-        fakeApi = {
-            getDetail: jest.fn(),
-            getList: jest.fn(),
-            update: jest.fn(),
-            create: jest.fn(),
-            delete: jest.fn(),
-        }
+        fakeTypes = clone(FAKE_TYPES);
+        fakeApi = FAKE_API(jest);
     });
 
     afterEach(() => {
-        jest.restoreAllMocks();
+        jest.resetAllMocks();
     })
 
     it('Check base props', () => {
