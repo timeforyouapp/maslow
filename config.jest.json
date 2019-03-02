@@ -9,8 +9,11 @@
     "coveragePathIgnorePatterns": [
         "<rootDir>/node_modules/"
     ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/tests/helpers/"
+    ],
     "testRegex": [
-      "(/tests/.*|(\\.|/)(test|spec))\\.[jt]sx?$"
+      "(/tests/.*|(\\.|/)spec)\\.[jt]sx?$"
     ],
     "collectCoverageFrom": [
       "src/**/*.js"

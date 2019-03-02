@@ -4,7 +4,7 @@ import ActionCreator from '../src/actionCreator';
 import {
     FAKE_TYPES,
     FAKE_API,
-} from './_utils';
+} from './helpers/mocks';
 
 describe('actionCreator', () => {
     const fakeName = 'Fake';

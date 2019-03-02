@@ -13,6 +13,9 @@ export const FAKE_TYPES = {
     update: FAKE_DOMAIN_TYPE,
     create: FAKE_DOMAIN_TYPE,
     delete: FAKE_DOMAIN_TYPE,
+    domainFetching: 'domainFetching',
+    domainFetchSuccess: 'domainFetchSuccess',
+    domainFetchError: 'domainFetchError',
 };
 
 export const FAKE_API = (j) => ({
