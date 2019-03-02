@@ -1,7 +1,7 @@
-import { ActionCreator } from 'actionCreator.js';
-import { ReducerCreator } from 'reducerCreator.js';
+import ActionCreator from 'actionCreator.js';
+import ReducerCreator from 'reducerCreator.js';
 
-const ModuleCreator = (name, { initialState = {}, customActionTypes = {}, customReducers = {}, customActions = {} }) => {
+export const ModuleCreator = (name, { customInitialState = {}, customActionTypes = {}, customReducers = {}, customActions = {} }) => {
   const upperName = name.toUpperCase();
   const baseTypes = {
     setType: `SET_${upperName}`,
@@ -46,7 +46,9 @@ const ModuleCreator = (name, { initialState = {}, customActionTypes = {}, custom
  
   return {
     actionTypes,
-    actions: ActionCreator(name, defaultStates, customActions),
-    reducer: ReducerCreator(name, defaultStates, initialState, customReducers),
+    actions: ActionCreator(name, actionTypes, customActions),
+    reducer: ReducerCreator(name, actionTypes, customInitialState, customReducers),
   }
 }
+
+export default ModuleCreator;
