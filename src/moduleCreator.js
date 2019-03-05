@@ -42,13 +42,14 @@ export const ModuleCreator = (name, api, {
 
   const actionTypes = {
     ...baseTypes,
-    getDetailActions: CreateApiActions('getDetail'),
-    getListActions: CreateApiActions('getList'),
-    saveActions: CreateApiActions('save'),
-    deleteActions: CreateApiActions('delete'),
+    getDetail: CreateApiActions('getDetail'),
+    getList: CreateApiActions('getList'),
+    save: CreateApiActions('save'),
+    delete: CreateApiActions('delete'),
   }
 
   return {
+    name,
     actionTypes,
     actions: ActionCreator(name, actionTypes, api, customActions),
     reducer: ReducerCreator(actionTypes, customInitialState, customReducers),

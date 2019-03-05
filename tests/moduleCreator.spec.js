@@ -21,22 +21,22 @@ describe('moduleCreator', () => {
             "domainFetching": "USER_FETCHING",
             "domainFetchError": "USER_FETCH_ERROR",
             "domainFetchSuccess": "USER_FETCH_SUCCESS",
-            "getDetailActions": {
+            "getDetail": {
                 "success": "USER_FETCHING",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
-            "getListActions": {
+            "getList": {
                 "success": "USER_FETCHING",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
-            "saveActions": {
+            "save": {
                 "success": "USER_FETCHING",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
-            "deleteActions": {
+            "delete": {
                 "success": "USER_FETCHING",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
@@ -50,6 +50,7 @@ describe('moduleCreator', () => {
         expect(ActionCreator).toHaveBeenCalledWith(modlName, expectedActionTypes, fakeUserApi, {});
         expect(ReducerCreator).toHaveBeenCalledWith(expectedActionTypes, {}, {});
         expect(userModl).toHaveProperty('actionTypes', expectedActionTypes);
+        expect(userModl).toHaveProperty('name', modlName);
     });
 
     it('check with a custom reducer', () => {
@@ -63,6 +64,7 @@ describe('moduleCreator', () => {
         expect(ActionCreator).toHaveBeenCalledWith(modlName, expectedActionTypes, fakeUserApi, {});
         expect(ReducerCreator).toHaveBeenCalledWith(expectedActionTypes, {}, customReducers);
         expect(userModl).toHaveProperty('actionTypes', expectedActionTypes);
+        expect(userModl).toHaveProperty('name', modlName);
     });
 
     it('check with a custom action', () => {
@@ -76,6 +78,7 @@ describe('moduleCreator', () => {
         expect(ActionCreator).toHaveBeenCalledWith(modlName, expectedActionTypes, fakeUserApi, customActions);
         expect(ReducerCreator).toHaveBeenCalledWith(expectedActionTypes, {}, {});
         expect(userModl).toHaveProperty('actionTypes', expectedActionTypes);
+        expect(userModl).toHaveProperty('name', modlName);
     });
 
     it('check with a custom action type', () => {
@@ -86,10 +89,11 @@ describe('moduleCreator', () => {
 
         const userModl = ModuleCreator(modlName, fakeUserApi, { customActionTypes });
 
-        expectedActionTypes.getListActions.success = customActionTypeName;
+        expectedActionTypes.getList.success = customActionTypeName;
 
         expect(ActionCreator).toHaveBeenCalledWith(modlName, expectedActionTypes, fakeUserApi, {});
         expect(ReducerCreator).toHaveBeenCalledWith(expectedActionTypes, {}, {});
         expect(userModl).toHaveProperty('actionTypes', expectedActionTypes);
+        expect(userModl).toHaveProperty('name', modlName);
     });
  });

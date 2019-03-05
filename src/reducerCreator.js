@@ -42,8 +42,7 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
   
   _reducerMap[types.getDetail.success] = _reducerMap[types.setType]
   _reducerMap[types.getList.success] = _reducerMap[types.setAllType]
-  _reducerMap[types.create.success] = _reducerMap[types.setType]
-  _reducerMap[types.update.success] = _reducerMap[types.setType]
+  _reducerMap[types.save.success] = _reducerMap[types.setType]
   _reducerMap[types.delete.success] = _reducerMap[types.clearState]
   
   const reducerMap = {
