@@ -1,11 +1,12 @@
-import ActionCreator from 'actionCreator.js';
-import ReducerCreator from 'reducerCreator.js';
+import ActionCreator from './actionCreator.js';
+import ReducerCreator from './reducerCreator.js';
 
 export const ModuleCreator = (name, api, {
   customInitialState = {},
   customReducers = {},
   customActions = {},
-}) => {
+  customActionTypes = {},
+} = {}) => {
   const upperName = name.toUpperCase();
   const baseTypes = {
     setType: `SET_${upperName}`,
@@ -15,30 +16,30 @@ export const ModuleCreator = (name, api, {
     domainFetchError: `${upperName}_FETCH_ERROR`,
     domainFetchSuccess: `${upperName}_FETCH_SUCCESS`,
   }
-  
+
   const CreateApiActions = (key) => {
     const actions = {
       success: baseTypes.domainFetching,
       fetching: baseTypes.domainFetching,
       error: baseTypes.domainFetchError
     }
-    
+
     const template = [
       { key: 'fetching', act: `${key}Fetching` },
       { key: 'error', act: `${key}FetchError` },
       { key: 'success', act: `${key}FetchSuccess` },
     ]
-    
+
     template.forEach((data) => {
-      if (customActions[data[act]]) {
-        actions[data[key]] = data[act]
+      if (customActionTypes[data.act]) {
+        actions[data.key] = customActionTypes[data.act]
       }
     });
-  
+
     return actions;
   };
-  
-  
+
+
   const actionTypes = {
     ...baseTypes,
     getDetailActions: CreateApiActions('getDetail'),
@@ -46,11 +47,11 @@ export const ModuleCreator = (name, api, {
     saveActions: CreateApiActions('save'),
     deleteActions: CreateApiActions('delete'),
   }
- 
+
   return {
     actionTypes,
     actions: ActionCreator(name, actionTypes, api, customActions),
-    reducer: ReducerCreator(name, actionTypes, customInitialState, customReducers),
+    reducer: ReducerCreator(actionTypes, customInitialState, customReducers),
   }
 }
 
