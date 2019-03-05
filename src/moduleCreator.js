@@ -1,7 +1,11 @@
 import ActionCreator from 'actionCreator.js';
 import ReducerCreator from 'reducerCreator.js';
 
-export const ModuleCreator = (name, { customInitialState = {}, customActionTypes = {}, customReducers = {}, customActions = {} }) => {
+export const ModuleCreator = (name, api, {
+  customInitialState = {},
+  customReducers = {},
+  customActions = {},
+}) => {
   const upperName = name.toUpperCase();
   const baseTypes = {
     setType: `SET_${upperName}`,
@@ -26,9 +30,8 @@ export const ModuleCreator = (name, { customInitialState = {}, customActionTypes
     ]
     
     template.forEach((data) => {
-      const customAct = customActionTypes[data[act]];
-      if (customAct) {
-        actions[data[key]] = customAct
+      if (customActions[data[act]]) {
+        actions[data[key]] = data[act]
       }
     });
   
@@ -46,7 +49,7 @@ export const ModuleCreator = (name, { customInitialState = {}, customActionTypes
  
   return {
     actionTypes,
-    actions: ActionCreator(name, actionTypes, customActions),
+    actions: ActionCreator(name, actionTypes, api, customActions),
     reducer: ReducerCreator(name, actionTypes, customInitialState, customReducers),
   }
 }
