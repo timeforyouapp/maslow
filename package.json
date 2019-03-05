@@ -30,6 +30,7 @@
   },
   "homepage": "https://github.com/timeforyouapp/maslow#readme",
   "dependencies": {
+    "docusaurus-init": "^1.0.2",
     "fast-clone": "^1.5.3",
     "react-redux": "^6.0.1",
     "redux": "^4.0.1"

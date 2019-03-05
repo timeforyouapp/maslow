@@ -1,0 +1,9 @@
+{
+  "docs": {
+    "Getting Start": [
+      "01-gettingstart",
+      "02-projectstructure",
+      "03-todoexample.md"
+    ]
+  }
+}
