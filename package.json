@@ -2,7 +2,7 @@
   "name": "maslow",
   "version": "1.0.0",
   "description": "A redux generic module creator for api stuff",
-  "main": "index.js",
+  "main": "dist/bundle.js",
   "directories": {
     "doc": "doc",
     "test": "test"
