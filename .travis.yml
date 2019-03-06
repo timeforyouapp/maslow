@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - '10'
+cache:
+  directories:
+    - node_modules
+script:
+  - npm run lint
+  - npm run test
+after_success:
+  - npm run coveralls
+  - cd website && npm install && npm run build
+deploy:
+  - provider: npm
+    email: guilherme.albino.francisco@gmail.com
+    api_key:
+      secure: NLV5g0UCCDXDVP0wQjY9glubFfAvhPX7A1E7Lkv7k6u+b5ZuromB/E9Na82WWB/GX20gwHCEMB6kzqoG9FUvag6ZeXrVQFHrPlr3fFz4L2oAwhd9kcGe7IPfv9SN0eNH/NAYUQWzcSxukjqh/I95X+jPa6Fl7tgN9IwXYFIcXPsFfHj8+xJrsqGiFt77FB9QVfmZx/lCtq7tBu1b9Jo/6FwNK5BXWburW+JRF50FcppestFLA1mkiXPovPj6aTV1mXAQwMimE1jafU4vA/I7eZHglaVLav1YYsGeW6cpmMsYL4ecxFkRvqUjLAMstczAjNjJXTbvnEHVdq6YOfnBbZDAYbJ2r8COj4qCke52Xzrxl8SICmZJegos8Ty59WJfHsOJoNSgZMHIztQg2MUdTQp7T44tBtuNRCyo7qY3N6Z0+Up04aKnUp5nsiAhlllih6K7LZZb1c9MQ8s6ZTQ5ynpQJnu3Dfn4yMLQG61JGrKQvGZc/RJ7xLjYjkBiXtBV6bZphf86Tm1BY+vVdDYkgingYUQchaRjVik4W/MhO0F+a7AigDWO7J3SwSSROexMJCepdmTd6bvIt/6X4qof7l8SopFD3K4t7UgJ1GpnpvDkzBJvhqBqwjAwDhRPwqT82+srJhvQYKcv2IyvI8AyLL29D4pmV1pniIgk6cgMYXg=
+    on:
+      tags: true
+  - provider: pages
+    local-dir: ./docs/build/maslow
+    skip-cleanup: true
+    github-token:
+      secure: HaL2e8geBwKo8CU9+nU1gx4ezhvtCSJbj605io2iCWpwEDAVQ8ZoSPXYy7Ov/akAv3Dy2eFvYC+h9GeUHtvHeWLsUAcBhc4QLYA3ByFgQh/fa9MuURoLG4PZOJW2/CeYm1+kko49r+1KggTCTSm1fnoRRJkXKIgUrm4YIK2w9D1s2wWo1vMc5bGwyWk0WHCF7g8oebvjBTIPzaLXTOABjwFT0rJBLVil9ZdCeBxVb6iQN+hwIoJg/jO3uTYJarANpVdNs+3o/DBXNYDD0jcB3I8+WIwKHsXwWzC7t3j7iI1Hoq0HjCgN7+FnJMaJpja+NAOwaH1GdCyk8ZSJ9vulyYLFp07JMo4j75OkFOpPQUPCCWXln7LqrZeqF7XcjpK/TBxwhKxvVo6QWRuMuZOL/8iQIGHCwS5wdS/eV7eDhLV1AWvT6DU+iZTgTPUu+lgVUIpwyjrrI98/10gzded1gsstZm3yS5Dhvw5CxVKKYchrImxnuRXlr7KL5Vb+rCd3BmVPrA3IqHoMCAi+1KNhwmPj/zzCl9FqvRU6HiMNl+t+ZulJSddKvnK25I3XfeYFsmoPg6nCQozF6voMrkk+U9D072ukeVLnRRCm0IniGoe7ILCOxafW45swc+xBFyV/Ub4TM/LNLeR+2F89YNM+lBEX+WSFSBdEj0xXKlBcJQc=
+    keep-history: true
+    on:
+      branch: master
+  

@@ -1,0 +1,9 @@
+tests
+docs
+config.jest.json
+.travis.yml
+.vscode
+coverage
+eslintrc
+.gitignore
+.git

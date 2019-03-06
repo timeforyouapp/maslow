@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "A website for testing",
+    "tagline": "A website for Maslow Documentation",
     "docs": {
       "01-gettingstart": {
         "title": "Getting Start with Maslow",
@@ -13,17 +13,9 @@
         "title": "Project Structure with Maslow",
         "sidebar_label": "Project Structure"
       },
-      "doc2": {
-        "title": "document number 2"
-      },
-      "doc3": {
-        "title": "This is document number 3"
-      },
-      "doc4": {
-        "title": "Other Document"
-      },
-      "doc5": {
-        "title": "Fifth Document"
+      "03-todoexample": {
+        "title": "ToDo List Example with Maslow",
+        "sidebar_label": "ToDo List Example"
       }
     },
     "links": {

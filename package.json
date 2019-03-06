@@ -8,8 +8,13 @@
     "test": "test"
   },
   "scripts": {
+    "build": "rollup -c",
+    "build:watch": "rollup -c -w",
     "test": "jest --config config.jest.json --coverage",
-    "test:dev": "jest --config config.jest.json --watch"
+    "test:watch": "jest --config config.jest.json --watch",
+    "lint": "eslint --config .eslintrc lib",
+    "lint:fix": "eslint --config .eslintrc lib --fix",
+    "coveralls": "cat coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -33,7 +38,12 @@
     "docusaurus-init": "^1.0.2",
     "fast-clone": "^1.5.3",
     "react-redux": "^6.0.1",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "rollup": "^0.65.0",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^9.1.6",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "rollup-watch": "^4.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
