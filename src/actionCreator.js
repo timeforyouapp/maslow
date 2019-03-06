@@ -10,21 +10,25 @@ export const ActionCreator = (name, types, api, customActions = {}) => ({
     [`_clear${name}State`]: () => ({
         type: types.clearState
     }),
-    [`get${name}Detail`]: (id) => ({
+    [`get${name}Detail`]: (payload) => ({
+        payload,
         type: types.getDetail,
-        api: api.getDetail(id),
+        api: (id) => api.getDetail(id),
     }),
-    [`get${name}List`]: (queryParams) => ({
+    [`get${name}List`]: (payload) => ({
+        payload,
         type: types.getList,
-        api: api.getList(queryParams),
+        api: (queryParams) => api.getList(queryParams),
     }),
-    [`save${name}`]: (id, item) => ({
-        type: item ? types.update :  types.create,
-        api: item ? api.update(id, item) : api.create(id),
+    [`save${name}`]: (payload) => ({
+        payload,
+        type: types.save,
+        api: ({id, data}) => id ? api.update(id, data) : api.create(data),
     }),
-    [`delete${name}`]: (id) => ({
+    [`delete${name}`]: (payload) => ({
+        payload,
         type: types.delete,
-        api: api.delete(id),
+        api: (id) => api.delete(id),
     }),
     ...customActions
 });

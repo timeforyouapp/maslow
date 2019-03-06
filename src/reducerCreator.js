@@ -29,10 +29,6 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
       ...state,
       fetching: true,
     }),
-    [types.domainFetchSuccess]: (state) => ({
-      ...state,
-      fetching: false,
-    }),
     [types.domainFetchError]: (state, payload) => ({
       ...state,
       fetching: false,
@@ -40,13 +36,12 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     })
   }
   
-  _reducerMap[types.getDetail.success] = _reducerMap[types.setType]
-  _reducerMap[types.getList.success] = _reducerMap[types.setAllType]
-  _reducerMap[types.save.success] = _reducerMap[types.setType]
-  _reducerMap[types.delete.success] = _reducerMap[types.clearState]
-  
   const reducerMap = {
     ..._reducerMap,
+    [types.getDetail.success]: _reducerMap[types.set],
+    [types.getList.success]: _reducerMap[types.setAll],
+    [types.save.success]: _reducerMap[types.set],
+    [types.delete.success]: _reducerMap[types.clearState],
     ...customReducers,
   }
 

@@ -37,28 +37,18 @@ describe('actionCreator', () => {
 
         result = actions[`get${fakeName}Detail`](fakeEntry)
         expect(result).toHaveProperty('type', fakeTypes.getDetail);
-        expect(fakeApi.getDetail).toHaveBeenCalledTimes(1);
-        expect(fakeApi.getDetail).toHaveBeenCalledWith(fakeEntry);
 
         result = actions[`get${fakeName}List`](fakeEntry)
         expect(result).toHaveProperty('type', fakeTypes.getList);
-        expect(fakeApi.getList).toHaveBeenCalledTimes(1);
-        expect(fakeApi.getList).toHaveBeenCalledWith(fakeEntry);
 
         result = actions[`save${fakeName}`](fakeEntry)
-        expect(result).toHaveProperty('type', fakeTypes.create);
-        expect(fakeApi.create).toHaveBeenCalledTimes(1);
-        expect(fakeApi.create).toHaveBeenCalledWith(fakeEntry);
+        expect(result).toHaveProperty('type', fakeTypes.save);
 
         result = actions[`save${fakeName}`](fakeEntry, fakeEntry2)
-        expect(result).toHaveProperty('type', fakeTypes.update);
-        expect(fakeApi.update).toHaveBeenCalledTimes(1);
-        expect(fakeApi.update).toHaveBeenCalledWith(fakeEntry, fakeEntry2);
+        expect(result).toHaveProperty('type', fakeTypes.save);
 
         result = actions[`delete${fakeName}`](fakeEntry)
         expect(result).toHaveProperty('type', fakeTypes.delete);
-        expect(fakeApi.delete).toHaveBeenCalledTimes(1);
-        expect(fakeApi.delete).toHaveBeenCalledWith(fakeEntry);
     };
     
     beforeEach(() => {

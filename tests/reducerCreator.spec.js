@@ -13,7 +13,7 @@ describe('reducerCreator', () => {
     }
 
     beforeEach(() => {
-        fakeTypes = clone(FAKE_TYPES);
+        fakeTypes = { ...FAKE_TYPES };
     });
 
     it('check reducer with default props', () => {
@@ -66,21 +66,5 @@ describe('reducerCreator', () => {
 
         checkInitialState(state);
         expect(newState).toHaveProperty('errors', fakePayload);
-    });
-
-    it('check reducer default domainFetching, domainFetchSuccess fns', () => {
-        const reducer = ReducerCreator(fakeTypes);
-
-        const state = reducer(undefined, {});
-        const fetchingState = reducer(state, {
-            type: fakeTypes.domainFetching,
-        })
-        const fetchSuccessState = reducer(fetchingState, {
-            type: fakeTypes.domainFetchSuccess,
-        })
-
-        checkInitialState(state);
-        expect(fetchingState).toHaveProperty('fetching', true);
-        expect(fetchSuccessState).toHaveProperty('fetching', false);
     });
  });

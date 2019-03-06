@@ -13,7 +13,7 @@ export const FAKE_TYPES = {
     save: FAKE_DOMAIN_TYPE,
     delete: FAKE_DOMAIN_TYPE,
     domainFetching: 'domainFetching',
-    domainFetchSuccess: 'domainFetchSuccess',
+    domainFetchSuccess: () => 'domainFetchSuccess',
     domainFetchError: 'domainFetchError',
 };
 

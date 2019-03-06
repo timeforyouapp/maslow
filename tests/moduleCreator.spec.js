@@ -15,29 +15,28 @@ describe('moduleCreator', () => {
     beforeEach(() => {
         fakeUserApi = FAKE_API(jest);
         expectedActionTypes = {
-            "setType": "SET_USER",
+            "set": "SET_USER",
             "setAll": "SET_ALL_USER",
             "clearState": "CLEAR_USER_STATE",
             "domainFetching": "USER_FETCHING",
             "domainFetchError": "USER_FETCH_ERROR",
-            "domainFetchSuccess": "USER_FETCH_SUCCESS",
             "getDetail": {
-                "success": "USER_FETCHING",
+                "success": "USER_GETDETAIL_FETCH_SUCCESS",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
             "getList": {
-                "success": "USER_FETCHING",
+                "success": "USER_GETLIST_FETCH_SUCCESS",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
             "save": {
-                "success": "USER_FETCHING",
+                "success": "USER_SAVE_FETCH_SUCCESS",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
             "delete": {
-                "success": "USER_FETCHING",
+                "success": "USER_DELETE_FETCH_SUCCESS",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             }

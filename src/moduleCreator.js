@@ -9,17 +9,17 @@ export const ModuleCreator = (name, api, {
 } = {}) => {
   const upperName = name.toUpperCase();
   const baseTypes = {
-    setType: `SET_${upperName}`,
+    set: `SET_${upperName}`,
     setAll: `SET_ALL_${upperName}`,
     clearState: `CLEAR_${upperName}_STATE`,
     domainFetching: `${upperName}_FETCHING`,
     domainFetchError: `${upperName}_FETCH_ERROR`,
-    domainFetchSuccess: `${upperName}_FETCH_SUCCESS`,
+    domainFetchSuccess: (key) => `${upperName}_${key.toUpperCase()}_FETCH_SUCCESS`,
   }
 
   const CreateApiActions = (key) => {
     const actions = {
-      success: baseTypes.domainFetching,
+      success: baseTypes.domainFetchSuccess(key),
       fetching: baseTypes.domainFetching,
       error: baseTypes.domainFetchError
     }
@@ -39,7 +39,6 @@ export const ModuleCreator = (name, api, {
     return actions;
   };
 
-
   const actionTypes = {
     ...baseTypes,
     getDetail: CreateApiActions('getDetail'),
@@ -47,6 +46,8 @@ export const ModuleCreator = (name, api, {
     save: CreateApiActions('save'),
     delete: CreateApiActions('delete'),
   }
+
+  delete actionTypes.domainFetchSuccess;
 
   return {
     name,
