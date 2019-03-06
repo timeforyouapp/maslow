@@ -7,9 +7,9 @@ cache:
 script:
   - npm run lint
   - npm run test
+  - npm run build-doc
 after_success:
   - npm run coveralls
-  - cd website && npm install && npm run build
 deploy:
   - provider: npm
     email: guilherme.albino.francisco@gmail.com
@@ -18,7 +18,7 @@ deploy:
     on:
       tags: true
   - provider: pages
-    local-dir: ./docs/build/maslow
+    local-dir: docs/build/maslow
     skip-cleanup: true
     github-token:
       secure: MyglOGCskNdp6MwmURBodluyAsU+Rxxz7oMQUuIxjyR2CUy6NjuxIVQtTGOESv7yFDxtVr+kwW8M+KZGLCLOqJtIXHOILBG4NOeT31955e9r2FFL2MngKhtoZvuXrCnqqhuQZrmvQYdGXjLGHuNI32A2lv2yJ2AdhMNC+sOIKZrzJaHKCTG6YaAB0QI2K9lczkKbRwfkVVANU0gojJlfeoxrrZQDpNc1NJ1eJ19uxzW9TNjO48GRD3cSUpFI4/bTiw532H/vX1LiEMLnhRmi+GTRGTfSB0BGJmNQcHYvHN+poC+4GXL2HH+tgY0c9NvAXvrsr8FsXdcAUS46Y1Gbl0vTWgidPAE6F8QjA4QTm27RXONwwy9DJMieXkOckvtxg11+VCuY6czwTvgOoiIvI7bH1TVkNFDpyO1BAL9Pn70Z/yVskcue1umfu/IMF7Db0wpJUkPqEbgstruPHWlxJZ2uP3bgfMLf8w+ZwF/49q+yAG2eABDi1HCgNI5W802SUrEPd33L1+F1aTdIAWhiXjfiKdqwyVLxrzuCRNjnKTuOIl1WrHi1KBISOVhcNDj8QbDqOZuRKWX2YAHx5CH81yhD4/MJInPDU8cICDtAjfYX6nIdYR/RG/jDwr4KwY15qe6rEl+h3gfc07AuGx1AOtGps810BqFXJHgAMecRSbc=
