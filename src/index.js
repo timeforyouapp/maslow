@@ -1,4 +1,4 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux'
+import { combineReducers, createStore, applyMiddleware } from 'redux';
 
 import { apiMiddleware, affectMiddleware } from './middlewares';
 
@@ -22,4 +22,4 @@ export const createStoreByModules = (modules, middlewares = []) => {
         affectMiddleware,
         ...middlewares
     ]));
-}
+};

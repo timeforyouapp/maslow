@@ -3,7 +3,9 @@
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module",
-        "experimentalObjectRestSpread": true
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        }
     },
     "globals": {
         "global": true,

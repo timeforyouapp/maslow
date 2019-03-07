@@ -10,6 +10,6 @@ export const affectMiddleware = store => next => action => {
     (actionSideEffects.post || []).forEach((sideEffect) => {
         store.dispatch(sideEffect);
     });
-}
+};
 
 export default affectMiddleware;
