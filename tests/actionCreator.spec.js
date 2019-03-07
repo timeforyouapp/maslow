@@ -22,7 +22,7 @@ describe('actionCreator', () => {
         expect(actions).toHaveProperty(`get${fakeName}Detail`);
         expect(actions).toHaveProperty(`get${fakeName}List`);
         expect(actions).toHaveProperty(`save${fakeName}`);
-        expect(actions).toHaveProperty(`delete${fakeName}`);
+        expect(actions).toHaveProperty(`remove${fakeName}`);
 
         result = actions[`_set${fakeName}`](fakeEntry)
         expect(result).toHaveProperty('type', fakeTypes.set);
@@ -47,8 +47,8 @@ describe('actionCreator', () => {
         result = actions[`save${fakeName}`](fakeEntry, fakeEntry2)
         expect(result).toHaveProperty('type', fakeTypes.save);
 
-        result = actions[`delete${fakeName}`](fakeEntry)
-        expect(result).toHaveProperty('type', fakeTypes.delete);
+        result = actions[`remove${fakeName}`](fakeEntry)
+        expect(result).toHaveProperty('type', fakeTypes.remove);
     };
     
     beforeEach(() => {

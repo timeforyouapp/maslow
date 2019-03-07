@@ -44,7 +44,7 @@ export const ModuleCreator = (name, api, {
     getDetail: CreateApiActions('getDetail'),
     getList: CreateApiActions('getList'),
     save: CreateApiActions('save'),
-    delete: CreateApiActions('delete'),
+    remove: CreateApiActions('remove'),
   }
 
   delete actionTypes.domainFetchSuccess;

@@ -23,12 +23,12 @@ export const ActionCreator = (name, types, api, customActions = {}) => ({
     [`save${name}`]: (payload) => ({
         payload,
         type: types.save,
-        api: ({id, data}) => id ? api.update(id, data) : api.create(data),
+        api: ({id, ...data}) => id ? api.update(id, data) : api.create(data),
     }),
-    [`delete${name}`]: (payload) => ({
+    [`remove${name}`]: (payload) => ({
         payload,
-        type: types.delete,
-        api: (id) => api.delete(id),
+        type: types.remove,
+        api: (id) => api.remove(id),
     }),
     ...customActions
 });

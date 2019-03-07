@@ -4,14 +4,19 @@ import babel from 'rollup-plugin-babel';
 
 export default {
     input: 'src/index.js',
+    external: ['fast-clone', 'redux'],
     output: {
         name: 'maslow',
         file: 'dist/bundle.js',
-        format: 'umd'
+        format: 'cjs'
     },
     plugins: [
         resolve(),
         babel({ exclude: 'node_modules/**' }),
-        commonjs()
+        // commonjs({
+        //     namedExports: {
+        //         'dist/bundle.js': [ 'ModuleCreator' ]
+        //     }
+        // })
     ]
 }

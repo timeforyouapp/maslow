@@ -48,19 +48,20 @@ describe('index', () => {
             api: 'create',
             action: 'saveUser',
             expectProp: 'detail',
-            userEntryCheck: (mock) => expect(mock).toHaveBeenCalledWith(fakeUserEntry.data),
+            userEntryCheck: (mock) => expect(mock).toHaveBeenCalledWith(fakeUserEntry),
         }, done);
     });
 
     it('should update a common redux store', (done) => {
         const fakeUserEntry = { data: 'foo', id: 'bar' };
+        const { id, ...data } = fakeUserEntry;
 
         checkCallOutsFor({
             fakeUserEntry,
             api: 'update',
             action: 'saveUser',
             expectProp: 'detail',
-            userEntryCheck: (mock) => expect(mock).toHaveBeenCalledWith(fakeUserEntry.id, fakeUserEntry.data),
+            userEntryCheck: (mock) => expect(mock).toHaveBeenCalledWith(id, data),
         }, done);
     });
 
@@ -80,10 +81,10 @@ describe('index', () => {
         }, done);
     });
 
-    it('should delete a common redux store', (done) => {
+    it('should remove a common redux store', (done) => {
         checkCallOutsFor({
-            api: 'delete',
-            action: 'deleteUser',
+            api: 'remove',
+            action: 'removeUser',
             stateCheck: (state) => {
                 expect(state).toHaveProperty('list', []);
                 expect(state).toHaveProperty('detail', {});

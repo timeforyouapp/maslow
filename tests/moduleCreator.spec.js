@@ -35,8 +35,8 @@ describe('moduleCreator', () => {
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             },
-            "delete": {
-                "success": "USER_DELETE_FETCH_SUCCESS",
+            "remove": {
+                "success": "USER_REMOVE_FETCH_SUCCESS",
                 "fetching": "USER_FETCHING",
                 "error": "USER_FETCH_ERROR"
             }

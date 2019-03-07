@@ -2,6 +2,14 @@ import { combineReducers, createStore, applyMiddleware } from 'redux'
 
 import { apiMiddleware, affectMiddleware } from './middlewares';
 
+import actionCreator from './actionCreator';
+import moduleCreator from './moduleCreator';
+import reducerCreator from './reducerCreator';
+
+export const ActionCreator = actionCreator;
+export const ModuleCreator = moduleCreator;
+export const ReducerCreator = reducerCreator;
+
 export const createStoreByModules = (modules, middlewares = []) => {
     const reducers = {};
 
@@ -15,7 +23,3 @@ export const createStoreByModules = (modules, middlewares = []) => {
         ...middlewares
     ]));
 }
-
-export * from './actionCreator';
-export * from './moduleCreator';
-export * from './reducerCreator';

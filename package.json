@@ -12,8 +12,8 @@
     "build:watch": "rollup -c -w",
     "test": "jest --config config.jest.json --coverage",
     "test:watch": "jest --config config.jest.json --watch",
-    "lint": "eslint --config .eslintrc lib",
-    "lint:fix": "eslint --config .eslintrc lib --fix",
+    "lint": "eslint --config .eslintrc src",
+    "lint:fix": "eslint --config .eslintrc src --fix",
     "build-doc": "cd docs && npm install && npm run build",
     "coveralls": "cat coverage/lcov.info | coveralls"
   },

@@ -11,7 +11,7 @@ export const FAKE_TYPES = {
     getDetail: FAKE_DOMAIN_TYPE,
     getList: FAKE_DOMAIN_TYPE,
     save: FAKE_DOMAIN_TYPE,
-    delete: FAKE_DOMAIN_TYPE,
+    remove: FAKE_DOMAIN_TYPE,
     domainFetching: 'domainFetching',
     domainFetchSuccess: () => 'domainFetchSuccess',
     domainFetchError: 'domainFetchError',
@@ -22,5 +22,5 @@ export const FAKE_API = (j) => ({
     getList: j.fn(),
     update: j.fn(),
     create: j.fn(),
-    delete: j.fn(),
+    remove: j.fn(),
 })
