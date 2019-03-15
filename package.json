@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/timeforyouapp/maslow#readme",
   "dependencies": {
+    "axios": "^0.18.0",
     "docusaurus-init": "^1.0.2",
     "fast-clone": "^1.5.3",
     "node-schema": "^2.2.0",
