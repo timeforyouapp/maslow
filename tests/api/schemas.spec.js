@@ -1,4 +1,4 @@
-import {createNodeSchema, MaslowSchema} from '../../src/openapi/schemas';
+import {createNodeSchema, MaslowSchema} from '../../src/api/schemas';
 
 describe('MaslowSchema', () => {
     let User = null;

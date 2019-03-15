@@ -1,4 +1,4 @@
-import { parseOpenAPItoMaslowConfig } from '../../src/openapi/config';
+import { parseOpenAPItoMaslowConfig } from '../../src/api/openapi';
 
 describe('config parser', () => {
     const paths = {
