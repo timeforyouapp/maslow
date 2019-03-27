@@ -1,7 +1,7 @@
 import clone from 'fast-clone';
 
 const baseInitialState = {
-    fetching: false,
+    fetchState: 'fresh',
     errors: [],
     detail: {},
     list: [],
@@ -25,23 +25,30 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
         [types.clearState]: () => {
             return clone(initialState);
         },
-        [types.domainFetching]: (state) => ({
+        [types.domainfetchState]: (state) => ({
             ...state,
-            fetching: true,
+            fetchState: 'fetching',
         }),
         [types.domainFetchError]: (state, payload) => ({
             ...state,
-            fetching: false,
+            fetchState: 'failed',
             errors: payload,
         })
     };
+
+    const setFetchTrue = (reducerFn, fetchState) => (state, payload) => {
+        const newState = {...reducerFn(state, payload)};
+        newState.fetchState = fetchState;
+
+        return newState;
+    } 
   
     const reducerMap = {
         ..._reducerMap,
-        [types.getDetail.success]: _reducerMap[types.set],
-        [types.getList.success]: _reducerMap[types.setAll],
-        [types.save.success]: _reducerMap[types.set],
-        [types.remove.success]: _reducerMap[types.clearState],
+        [types.getDetail.success]: setFetchTrue(_reducerMap[types.set], 'detailFetched'),
+        [types.getList.success]: setFetchTrue(_reducerMap[types.setAll], 'listFetched'),
+        [types.save.success]: setFetchTrue(_reducerMap[types.set], 'saveFetched'),
+        [types.remove.success]: setFetchTrue(_reducerMap[types.clearState], 'removeFetched'),
         ...customReducers,
     };
 

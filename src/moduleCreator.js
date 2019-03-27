@@ -49,11 +49,13 @@ export const ModuleCreator = (name, api, {
 
     delete actionTypes.domainFetchSuccess;
 
+    const cReducers = typeof customReducers === 'function' ? customReducers(actionTypes) : customReducers;
+
     return {
         name,
         actionTypes,
         actions: ActionCreator(name, actionTypes, api, customActions),
-        reducer: ReducerCreator(actionTypes, customInitialState, customReducers),
+        reducer: ReducerCreator(actionTypes, customInitialState, cReducers),
     };
 };
 

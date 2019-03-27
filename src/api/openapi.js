@@ -45,6 +45,10 @@ const innerSet = (config, [path, ...paths], entity, value) => {
 
     const rpath = path.replace(/{|}/g, '');
 
+    if (rentity === '') {
+        return config[rpath] = value;
+    }
+
     if (paths.length === 0) {
         return config[rpath][rentity] = value;
     }

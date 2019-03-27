@@ -1,46 +1,12 @@
 import {createNodeSchema, MaslowSchema} from '../../src/api/schemas';
+import { openApiDefinitions } from '../helpers/mocks';
 
 describe('MaslowSchema', () => {
     let User = null;
     const id = 'foo';
     const name = 'bar';
     const notAllowedProp = 'fizz';
-    const fakeDefinition = {
-        "properties": {
-            "created_at": {
-                "format": "date-time",
-                "readOnly": true,
-                "type": "string",
-                "x-nullable": true
-            },
-            "email": {
-                "maxLength": 200,
-                "type": "string"
-            },
-            "id": {
-                "maxLength": 36,
-                "readOnly": true,
-                "type": "string"
-            },
-            "name": {
-                "maxLength": 200,
-                "type": "string"
-            },
-            "password": {
-                "maxLength": 256,
-                "type": "string"
-            },
-            "notMaxLength": {
-                "type": "string"
-            }
-        },
-        "required": [
-            "email",
-            "name",
-            "password"
-        ],
-        "type": "object"
-    }
+    const fakeDefinition = { ...openApiDefinitions };
 
     beforeEach(() => {
         User = MaslowSchema(fakeDefinition);

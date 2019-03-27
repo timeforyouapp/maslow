@@ -18,7 +18,7 @@ export const createNodeSchema = ({ properties, required }) => {
             schema[prop].invalidLength = str.isLength(minLength, propInfo.maxLength);
         }
 
-        if (~required.indexOf(prop)) {
+        if (required && ~required.indexOf(prop)) {
             schema[prop].required = (value) => typeof value === 'string' && value !== '';
         }
     });
