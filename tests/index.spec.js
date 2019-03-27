@@ -1,6 +1,6 @@
 jest.unmock();
 
-import { ModuleCreator, createStoreByModules } from '../src/index';
+import { ModuleCreator, createStoreByModules, _createActionFn } from '../src/index';
 import { FAKE_API } from './helpers/mocks';
 
 describe('index', () => {
@@ -24,18 +24,20 @@ describe('index', () => {
 
         const userModl = ModuleCreator(modlName, fakeUserApi);
         const store = createStoreByModules([ userModl ]);
-    
-        store.dispatch(userModl.actions[action](fakeUserEntry));
+
+        if (action) {
+            store.dispatch(userModl.actions[action](fakeUserEntry));
+        }
 
         setTimeout(function () {
             const state = store.getState();
             const prop = modlName.toLowerCase();
 
             expect(state).toHaveProperty(prop);
-            
+
             stateCheck ? stateCheck(state[prop]) : expect(state[prop]).toHaveProperty(expectProp, fakeUserReturn);
             userEntryCheck ? userEntryCheck(fakeUserApi[api]) : expect(fakeUserApi[api]).toHaveBeenCalledWith(fakeUserEntry);
-            
+
             cb();
         }, 300);
     }
@@ -89,8 +91,28 @@ describe('index', () => {
                 expect(state).toHaveProperty('list', []);
                 expect(state).toHaveProperty('detail', {});
                 expect(state).toHaveProperty('errors', []);
-                expect(state).toHaveProperty('fetching', false);
+                expect(state).toHaveProperty('fetchState', 'removeFetched');
             }
         }, done);
+    });
+
+    it('should exec inner actions', () => {
+        const fakeStore = { dispatch: jest.fn() };
+        const fakeEntry = 'foo';
+        const actionName = 'bar';
+        const fakeActionReturn = 'foobar';
+        const realActionName = `${actionName}${modlName}`;
+        const action = jest.fn().mockReturnValue(fakeActionReturn);
+        const dispatchAction = _createActionFn(fakeStore, {
+            [modlName]: {
+                [realActionName]: action
+            }
+        });
+
+        const exec = dispatchAction(actionName, modlName);
+        exec(fakeEntry);
+
+        expect(action).toHaveBeenCalledWith(fakeEntry);
+        expect(fakeStore.dispatch).toHaveBeenCalledWith(fakeActionReturn);
     });
 });

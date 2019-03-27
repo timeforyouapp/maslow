@@ -32,4 +32,4 @@ export const formConnectDecorator = (connect) => (namespace) => (Component) => {
     return connect(mapStateToProps, mapDispatchToProps)(ComponentWrap);
 }
 
-export default withFormConnector;
+export default formConnectDecorator;

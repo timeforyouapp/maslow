@@ -1,18 +1,18 @@
-export const FAKE_DOMAIN_TYPE = {
-    success: 'success',
-    fetching: 'fetching',
-    error: 'error',
-};
+export const FAKE_DOMAIN_TYPE = (domain) => ({
+    success: `${domain}Success`,
+    fetching: `${domain}Fetching`,
+    error: `${domain}Error`,
+});
 
 export const FAKE_TYPES = {
     setAll: 'setAll',
     set: 'set',
     clearState: 'clearState',
-    getDetail: FAKE_DOMAIN_TYPE,
-    getList: FAKE_DOMAIN_TYPE,
-    save: FAKE_DOMAIN_TYPE,
-    remove: FAKE_DOMAIN_TYPE,
-    domainFetching: 'domainFetching',
+    getDetail: FAKE_DOMAIN_TYPE('getDetail'),
+    getList: FAKE_DOMAIN_TYPE('getList'),
+    save: FAKE_DOMAIN_TYPE('save'),
+    remove: FAKE_DOMAIN_TYPE('remove'),
+    domainFetchState: 'domainFetchState',
     domainFetchSuccess: () => 'domainFetchSuccess',
     domainFetchError: 'domainFetchError',
 };

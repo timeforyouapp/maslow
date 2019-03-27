@@ -66,6 +66,24 @@ describe('moduleCreator', () => {
         expect(userModl).toHaveProperty('name', modlName);
     });
 
+    it('check with a function custom reducer', () => {
+        const customReducerName = 'test';
+        const customReducers = (actionTypes) => {
+            expect(actionTypes).toEqual(expectedActionTypes);
+
+            return {
+                [customReducerName]: 'bar',
+            }
+        }
+
+        const userModl = ModuleCreator(modlName, fakeUserApi, { customReducers });
+
+        expect(ActionCreator).toHaveBeenCalledWith(modlName, expectedActionTypes, fakeUserApi, {});
+        expect(ReducerCreator).toHaveBeenCalledWith(expectedActionTypes, {}, customReducers(expectedActionTypes));
+        expect(userModl).toHaveProperty('actionTypes', expectedActionTypes);
+        expect(userModl).toHaveProperty('name', modlName);
+    });
+
     it('check with a custom action', () => {
         const customActionName = 'test';
         const customActions = {

@@ -5,8 +5,8 @@ import { FAKE_TYPES } from './helpers/mocks';
 describe('reducerCreator', () => {
     let fakeTypes = null;
 
-    const checkInitialState = (state) => {
-        expect(state).toHaveProperty('fetching', false);
+    const checkInitialState = (state, fetchState = 'fresh') => {
+        expect(state).toHaveProperty('fetchState', fetchState);
         expect(state).toHaveProperty('detail', {});
         expect(state).toHaveProperty('list', []);
         expect(state).toHaveProperty('errors', []);
@@ -65,6 +65,47 @@ describe('reducerCreator', () => {
         })
 
         checkInitialState(state);
+        expect(newState).toHaveProperty('fetchState', 'failed');
         expect(newState).toHaveProperty('errors', fakePayload);
+    });
+
+    it('check reducer default domainFetchState fn', () => {
+        const reducer = ReducerCreator(fakeTypes);
+        const fakePayload = 'fakePayload';
+
+        const state = reducer(undefined, {});
+        const newState = reducer(state, {
+            type: fakeTypes.domainFetchState
+        })
+
+        checkInitialState(state);
+        expect(newState).toHaveProperty('fetchState', 'fetching');
+    });
+
+    it('check reducer default domainFetchState fn', () => {
+        const reducer = ReducerCreator(fakeTypes);
+
+        const state = reducer(undefined, {});
+        const newState = reducer(state, {
+            type: fakeTypes.domainFetchState
+        })
+
+        checkInitialState(state);
+        expect(newState).toHaveProperty('fetchState', 'fetching');
+    });
+
+    it('check generated fetch functions as getDetail', () => {
+        const reducer = ReducerCreator(fakeTypes);
+        const fakePayload = 'fakePayload';
+
+        const state = reducer(undefined, {});
+        const newState = reducer(state, {
+            type: fakeTypes.getDetail.success,
+            payload: fakePayload,
+        })
+
+        checkInitialState(state);
+        expect(newState).toHaveProperty('fetchState', 'detailFetched');
+        expect(newState).toHaveProperty('detail', fakePayload);
     });
  });

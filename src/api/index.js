@@ -17,7 +17,7 @@ export const MaslowAPI = (baseUri, config, opts) => {
         _setPostFetch: _axios.setPostFetch,
         _schemas: maslowSchemas,
         ...MaslowClient(_axios, parsedConfig),
-    }
-}
+    };
+};
 
 export default MaslowAPI;

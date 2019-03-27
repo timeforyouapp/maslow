@@ -28,29 +28,46 @@ describe('actionCreator', () => {
         expect(result).toHaveProperty('type', fakeTypes.set);
         expect(result).toHaveProperty('payload', fakeEntry);
 
-        result = actions[`_setAll${fakeName}`](fakeEntry)
+        result = actions[`_setAll${fakeName}`](fakeEntry);
         expect(result).toHaveProperty('type', fakeTypes.setAll);
         expect(result).toHaveProperty('payload', fakeEntry);
 
         result = actions[`_clear${fakeName}State`](fakeEntry)
         expect(result).toHaveProperty('type', fakeTypes.clearState);
 
-        result = actions[`get${fakeName}Detail`](fakeEntry)
+        result = actions[`get${fakeName}Detail`](fakeEntry);
+        result.api(fakeEntry);
+        expect(fakeApi.getDetail).toHaveBeenCalledWith(fakeEntry);
         expect(result).toHaveProperty('type', fakeTypes.getDetail);
+        expect(result).toHaveProperty('payload', fakeEntry);
 
         result = actions[`get${fakeName}List`](fakeEntry)
+        result.api(fakeEntry);
+        expect(fakeApi.getList).toHaveBeenCalledWith(fakeEntry);
         expect(result).toHaveProperty('type', fakeTypes.getList);
+        expect(result).toHaveProperty('payload', fakeEntry);
 
-        result = actions[`save${fakeName}`](fakeEntry)
+        const fakeUserCreate = { fakeEntry };
+        result = actions[`save${fakeName}`](fakeEntry);
+        result.api(fakeUserCreate);
+        expect(fakeApi.create).toHaveBeenCalledWith(fakeUserCreate);
         expect(result).toHaveProperty('type', fakeTypes.save);
+        expect(result).toHaveProperty('payload', fakeEntry);
 
-        result = actions[`save${fakeName}`](fakeEntry, fakeEntry2)
+        const fakeUserUpdate = { id: fakeEntry2, fakeEntry };
+        result = actions[`save${fakeName}`](fakeEntry, fakeEntry2);
+        result.api(fakeUserUpdate);
+        expect(fakeApi.update).toHaveBeenCalledWith(fakeEntry2, { fakeEntry });
         expect(result).toHaveProperty('type', fakeTypes.save);
+        expect(result).toHaveProperty('payload', fakeEntry);
 
         result = actions[`remove${fakeName}`](fakeEntry)
+        result.api(fakeEntry);
+        expect(fakeApi.remove).toHaveBeenCalledWith(fakeEntry);
         expect(result).toHaveProperty('type', fakeTypes.remove);
+        expect(result).toHaveProperty('payload', fakeEntry);
     };
-    
+
     beforeEach(() => {
         fakeTypes = clone(FAKE_TYPES);
         fakeApi = FAKE_API(jest);
@@ -75,7 +92,7 @@ describe('actionCreator', () => {
         });
 
         checkAttributesAndExecFunctions(actions);
-        
+
         const result = actions[newFakeActions](fakeEntry);
         expect(actions).toHaveProperty(newFakeActions);
         expect(result).toHaveProperty('type', newFakeActions);

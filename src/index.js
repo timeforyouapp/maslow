@@ -18,6 +18,12 @@ export { parseOpenAPItoMaslowConfig } from './api/openapi';
 
 export * from './connectors';
 
+export const _createActionFn = (store, indexedActions) => (actionName, namespace) => (...parameters) => {
+    const actions = indexedActions[namespace];
+    const action = actions[`${actionName}${namespace}`];
+    return store.dispatch(action(...parameters));
+};
+
 export const createStoreByModules = (modules, middlewares = []) => {
     const reducers = {};
     const indexedActions = {};
@@ -33,11 +39,7 @@ export const createStoreByModules = (modules, middlewares = []) => {
         ...middlewares
     ]));
 
-    store.dispatch.action = (actionName, namespace) => (...parameters) => {
-        const actions = indexedActions[namespace];
-        const action = actions[`${actionName}${namespace}`];
-        return store.dispatch(action(...parameters));
-    };
+    store.dispatch.action = _createActionFn(store, indexedActions);
 
     return store;
 };

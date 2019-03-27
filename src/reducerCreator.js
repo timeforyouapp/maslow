@@ -25,7 +25,7 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
         [types.clearState]: () => {
             return clone(initialState);
         },
-        [types.domainfetchState]: (state) => ({
+        [types.domainFetchState]: (state) => ({
             ...state,
             fetchState: 'fetching',
         }),
@@ -41,8 +41,8 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
         newState.fetchState = fetchState;
 
         return newState;
-    } 
-  
+    };
+
     const reducerMap = {
         ..._reducerMap,
         [types.getDetail.success]: setFetchTrue(_reducerMap[types.set], 'detailFetched'),
@@ -58,7 +58,7 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
         if (reducer) {
             return reducer(state, action.payload);
         }
-    
+
         return state;
     };
 };
