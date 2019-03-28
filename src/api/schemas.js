@@ -14,6 +14,11 @@ export const createNodeSchema = ({ properties }) => {
         const propInfo = properties[prop];
         const parsedProp = camelize(prop);
 
+        if (propInfo.readOnly) {
+            schema[parsedProp] = joi.any();
+            return;
+        }
+    
         if (propInfo.format) {
             switch(propInfo.format) {
             case 'date-time': {
@@ -56,10 +61,15 @@ export const MaslowSchema = function (definition) {
     function initSchema(values, data) {
         const innerValues = {};
         const innerMethods = {};
+        const readOnly = [];
         let next = null;
         let prev = data ? data.__prev__ : null;
 
         Object.keys(schemaItems).forEach((key) => {
+            if (schemaItems[key].describe().type === 'any') {
+                readOnly.push(key);
+            }
+
             if (values[key] === undefined) {
                 return;
             }
@@ -113,9 +123,18 @@ export const MaslowSchema = function (definition) {
             },
             validate: function () {
                 return new Promise((resolve) => {
-                    resolve(
-                        joi.assert(innerValues, joi.object(schemaItems).options({ abortEarly: false }))
-                    );
+                    const schema = joi.object(schemaItems).options({ abortEarly: false });
+                    const validValues = {};
+
+                    Object.keys(innerValues).forEach((key) => {
+                        if (readOnly.indexOf(key) > -1) {
+                            return;
+                        }
+
+                        validValues[key] = innerValues[key];
+                    });
+        
+                    resolve(joi.assert(validValues, schema));
                 }).catch((joiErrors) => {
                     const errors = {};
 

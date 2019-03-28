@@ -147,6 +147,11 @@ export const openApiDefinitions = {
             "type": "string",
             "x-nullable": true
         },
+        "fooBar": {
+            "format": "date-time",
+            "type": "string",
+            "x-nullable": true
+        },
         "email": {
             "maxLength": 200,
             "type": "string"
