@@ -1,5 +1,4 @@
-import Schema from 'node-schema';
-import str from 'string-validator';
+import joi from 'joi-browser';
 
 export const createNodeSchema = ({ properties, required }) => {
     const schema = {};
@@ -7,19 +6,33 @@ export const createNodeSchema = ({ properties, required }) => {
     Object.keys(properties).forEach((prop) => {
         const propInfo = properties[prop];
 
-        if (propInfo.readOnly) {
-            return;
+        if (propInfo.format) {
+            switch(propInfo.format) {
+                case 'date-time': {
+                    schema[prop] = joi.date();
+                    break;
+                }
+            }
         }
 
-        schema[prop] = {};
+        if (propInfo.type === 'string' && !propInfo.format) {
+            schema[prop] = joi.string().min(propInfo.minLength || 0);
 
-        if (propInfo.maxLength) {
-            const minLength = propInfo.minLength || 0;
-            schema[prop].invalidLength = str.isLength(minLength, propInfo.maxLength);
+            if (propInfo.maxLength) {
+                schema[prop] = schema[prop].max(propInfo.maxLength);
+            }
         }
 
-        if (required && ~required.indexOf(prop)) {
-            schema[prop].required = (value) => typeof value === 'string' && value !== '';
+        if (propInfo.type === 'integer') {
+            schema[prop] = joi.number().integer();
+        }
+
+        if (propInfo.type === 'number') {
+            schema[prop] = joi.number();
+        }
+
+        if (!propInfo['x-nullable']) {
+            schema[prop] = schema[prop].required();
         }
     });
 
@@ -39,6 +52,10 @@ export const MaslowSchema = function (definition) {
         let prev = data ? data.__prev__ : null;
 
         Object.keys(definition.properties).forEach((key) => {
+            if (values[key] === undefined) {
+                return;
+            }
+
             innerValues[key] = values[key];
         });
 
@@ -87,8 +104,28 @@ export const MaslowSchema = function (definition) {
                 return methods.parse({...innerValues});
             },
             validate: function () {
-                const s = Schema(schemaItems);
-                return s.validate(innerValues);
+                return new Promise((resolve) => {
+                    resolve(
+                        joi.assert(innerValues, joi.object(schemaItems).options({ abortEarly: false }))
+                    );
+                }).catch((joiErrors) => {
+                    const errors = {};
+
+                    joiErrors.details.forEach((e) => {
+                        const path = e.path[0];
+                        if (!errors[path]) {
+                            errors[path] = [];
+                        }
+
+                        errors[path].push({
+                            type: e.type.split('.')[1],
+                            ...e.context,
+                            _message: e.message,
+                        });
+                    });
+
+                    return errors;
+                });
             }
         });
     }

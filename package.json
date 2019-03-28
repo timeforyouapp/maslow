@@ -39,7 +39,7 @@
     "axios": "^0.18.0",
     "docusaurus-init": "^1.0.2",
     "fast-clone": "^1.5.3",
-    "node-schema": "^2.2.0",
+    "joi-browser": "^13.4.0",
     "react": "^16.8.4",
     "react-redux": "^6.0.1",
     "redux": "^4.0.1",
@@ -47,8 +47,7 @@
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-commonjs": "^9.1.6",
     "rollup-plugin-node-resolve": "^3.3.0",
-    "rollup-watch": "^4.3.1",
-    "string-validator": "^1.0.5"
+    "rollup-watch": "^4.3.1"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",

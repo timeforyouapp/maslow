@@ -12,28 +12,14 @@ describe('MaslowSchema', () => {
         User = MaslowSchema(fakeDefinition);
     });
 
-    it('createNodeSchema createNodeSchema() return correct validations', () => {
-        const fakeSchema = createNodeSchema(fakeDefinition);
-
-        expect(fakeSchema).not.toHaveProperty('id');
-        expect(fakeSchema).not.toHaveProperty('created_at');
-
-        fakeDefinition.required.forEach((key) => {
-            expect(fakeSchema[key]).toHaveProperty('invalidLength');
-            expect(fakeSchema[key]).toHaveProperty('required');
-        });
-    });
-
     it('should MaslowSchema return with correct values', () => {
         const user = User({ name, id, notAllowedProp });
 
-        expect(user.id).toBe(id);
-        expect(user.name).toBe(name);
-        expect(user).not.toHaveProperty('notAllowedProp');
+        expect(user).toHaveProperty('id', id);
+        expect(user).toHaveProperty('name', name);
 
         [
             'set',
-            // 'method',
             'extractValues',
             'validate',
             'update',
@@ -125,12 +111,39 @@ describe('MaslowSchema', () => {
         expect(user.prev()).toBe(null);
     });
 
-    it('should .validate work as expected', () => {
-        const user = User({ name, id, notAllowedProp });
+    it('should .validate without errors', () => {
+        const user = User({
+            name, id,
+            email: 'foo@bar.com',
+            notMaxLength: 'fizz',
+            password: 'fuzz',
+        });
 
         return user.validate().then((errors) => {
-            expect(errors).toHaveProperty('email');
-            expect(errors).toHaveProperty('password');
+            expect(errors).toBe(undefined);
         });
     });
-})
+
+    it('should .validate date', () => {
+        const user = User({
+            name, id,
+            email: 'foo@bar.com',
+            notMaxLength: 'fizz',
+            password: 'fuzz',
+            created_at: 'aaaa',
+        });
+
+        return user.validate().then((errors) => {
+            expect(errors.created_at[0]).toHaveProperty('type', 'base');
+        });
+    });
+
+    it('should .validate throw errors', () => {
+        const user = User({ email: 'gui_x.com', name, id, notAllowedProp });
+
+        return user.validate().then((errors) => {
+            expect(errors.password[0]).toHaveProperty('type', 'required');
+            expect(errors.notMaxLength[0]).toHaveProperty('type', 'required');
+        });
+    });
+});
