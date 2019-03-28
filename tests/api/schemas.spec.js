@@ -130,11 +130,11 @@ describe('MaslowSchema', () => {
             email: 'foo@bar.com',
             notMaxLength: 'fizz',
             password: 'fuzz',
-            created_at: 'aaaa',
+            createdAt: 'aaaa',
         });
 
         return user.validate().then((errors) => {
-            expect(errors.created_at[0]).toHaveProperty('type', 'base');
+            expect(errors.createdAt[0]).toHaveProperty('type', 'base');
         });
     });
 

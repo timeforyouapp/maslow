@@ -164,7 +164,7 @@ export const openApiDefinitions = {
             "maxLength": 256,
             "type": "string"
         },
-        "notMaxLength": {
+        "not-max-length": {
             "type": "string"
         }
     },

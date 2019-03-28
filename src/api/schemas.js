@@ -1,38 +1,46 @@
 import joi from 'joi-browser';
 
-export const createNodeSchema = ({ properties, required }) => {
+const camelize = (text) => {
+    return text.replace(/^([A-Z])|[\s-_]+(\w)/g, function(_, p1, p2) {
+        if (p2) return p2.toUpperCase();
+        return p1.toLowerCase();        
+    });
+};
+
+export const createNodeSchema = ({ properties }) => {
     const schema = {};
 
     Object.keys(properties).forEach((prop) => {
         const propInfo = properties[prop];
+        const parsedProp = camelize(prop);
 
         if (propInfo.format) {
             switch(propInfo.format) {
-                case 'date-time': {
-                    schema[prop] = joi.date();
-                    break;
-                }
+            case 'date-time': {
+                schema[parsedProp] = joi.date();
+                break;
+            }
             }
         }
 
         if (propInfo.type === 'string' && !propInfo.format) {
-            schema[prop] = joi.string().min(propInfo.minLength || 0);
+            schema[parsedProp] = joi.string().min(propInfo.minLength || 0);
 
             if (propInfo.maxLength) {
-                schema[prop] = schema[prop].max(propInfo.maxLength);
+                schema[parsedProp] = schema[parsedProp].max(propInfo.maxLength);
             }
         }
 
         if (propInfo.type === 'integer') {
-            schema[prop] = joi.number().integer();
+            schema[parsedProp] = joi.number().integer();
         }
 
         if (propInfo.type === 'number') {
-            schema[prop] = joi.number();
+            schema[parsedProp] = joi.number();
         }
 
         if (!propInfo['x-nullable']) {
-            schema[prop] = schema[prop].required();
+            schema[parsedProp] = schema[parsedProp].required();
         }
     });
 
@@ -51,7 +59,7 @@ export const MaslowSchema = function (definition) {
         let next = null;
         let prev = data ? data.__prev__ : null;
 
-        Object.keys(definition.properties).forEach((key) => {
+        Object.keys(schemaItems).forEach((key) => {
             if (values[key] === undefined) {
                 return;
             }
