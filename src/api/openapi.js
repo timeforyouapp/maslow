@@ -1,72 +1,96 @@
 const mapResources = (resources, maslowSchemas) => {
-    const mappedResources = {};
+  const mappedResources = {};
 
-    Object.keys(resources).forEach((method) => {
-        const add = {};
-        const response = resources[method].responses.default;
+  Object.keys(resources).forEach((method) => {
+    const add = {};
+    const response = resources[method].responses.default;
+    const params = resources[method].parameters || [];
 
-        if (response) {
-            let schema = null;
-            let isArray = false;
+    if (response) {
+      let schema = null;
+      let isArray = false;
 
-            if (response.schema.items) {
-                schema = response.schema.items.$ref;
-                isArray = true;
-            } else {
-                schema = response.schema.$ref;
-            }
+      if (response.schema.items) {
+        schema = response.schema.items.$ref;
+        isArray = true;
+      } else {
+        schema = response.schema.$ref;
+      }
 
-            schema = maslowSchemas[schema.split('/').reverse()[0]];
+      schema = maslowSchemas[schema.split('/').reverse()[0]];
 
-            if (isArray) {
-                add.transformResponse = (data) => data.map(schema);
-            } else {
-                add.transformResponse = schema;
-            }
+      if (isArray) {
+        add.transformResponse = data => data.map(schema);
+      } else {
+        add.transformResponse = schema;
+      }
+    }
 
+    params.forEach((param) => {
+      if (param.in === 'body') {
+        let schema;
+
+        if (param.schema.$ref) {
+          schema = maslowSchemas[param.schema.$ref.split('/').reverse()[0]];
+        } else {
+          schema = x => x;
         }
 
-        mappedResources[method] = {
-            uri: '/',
-            method,
-            ...add
-        };
+        add.transformRequest = body => schema(body);
+      }
     });
 
-    return mappedResources;
+    mappedResources[method] = {
+      uri: '/',
+      method,
+      ...add,
+    };
+  });
+
+  return mappedResources;
 };
 
 const innerSet = (config, [path, ...paths], entity, value) => {
-    const rentity = entity.replace(/{|}/g, '');
+  const rentity = entity.replace(/{|}/g, '');
 
-    if (!path) {
-        return config[rentity] = value;
-    }
+  if (!path) {
+    // eslint-disable-next-line
+    config[rentity] = value;
+    return;
+  }
 
-    const rpath = path.replace(/{|}/g, '');
+  const rpath = path.replace(/{|}/g, '');
 
-    if (rentity === '') {
-        return config[rpath] = value;
-    }
+  if (rentity === '') {
+    // eslint-disable-next-line
+    config[rpath] = value;
+    return;
+  }
 
-    if (paths.length === 0) {
-        return config[rpath][rentity] = value;
-    }
+  if (paths.length === 0) {
+    // eslint-disable-next-line
+    config[rpath][rentity] = value;
+    return;
+  }
 
-    return innerSet(config[rpath], paths, rentity, value);
+  innerSet(config[rpath], paths, rentity, value);
 };
 
 export const parseOpenAPItoMaslowConfig = (openApiFile, maslowSchemas) => {
-    const maslowConfig = {};
+  const maslowConfig = {};
 
-    Object.keys(openApiFile.paths).forEach((path) => {
-        const [entity, ...paths] = path.replace(/^\//, '').split('/').reverse();
+  Object.keys(openApiFile.paths).forEach((path) => {
+    const [entity, ...paths] = path.replace(/^\//, '').split('/').reverse();
 
-        innerSet(maslowConfig, paths.reverse(), entity, {
-            uri: `/${entity}`,
-            resources: mapResources(openApiFile.paths[path], maslowSchemas)
-        });
+    innerSet(maslowConfig, paths.reverse(), entity, {
+      uri: `/${entity}`,
+      resources: mapResources(openApiFile.paths[path], maslowSchemas),
     });
+  });
 
-    return maslowConfig;
+  return maslowConfig;
+};
+
+export default {
+  parseOpenAPItoMaslowConfig,
 };

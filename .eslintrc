@@ -1,10 +1,11 @@
 {
-    "extends": "eslint:recommended",
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "experimentalObjectRestSpread": true
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "settings": {
+        "import/resolver": {
+            "node": {
+                "extensions": [".js", ".jsx"]
+            }
         }
     },
     "globals": {
@@ -23,11 +24,14 @@
         "Promise": true,
         "process": true
     },
-    "rules": {
-        "no-var": 1,
-        "no-console": 1,
-        "semi": 2,
-        "quotes": [2, "single"],
-        "indent": ["error", 4]
-    }
+    "overrides": [
+        {
+            "files": ["./**/*.js"],
+            "rules": {
+                "indent": ["error", 2],
+                "react/jsx-indent": ["error", 2],
+                "react/jsx-indent-props": ["error", 2]
+            }
+        }
+    ]
 }

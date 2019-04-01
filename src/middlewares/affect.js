@@ -1,15 +1,15 @@
-export const affectMiddleware = store => next => action => {
-    const actionSideEffects = action.affect || {};
+export const affectMiddleware = store => next => (action) => {
+  const actionSideEffects = action.affect || {};
 
-    (actionSideEffects.pre || []).forEach((sideEffect) => {
-        store.dispatch(sideEffect);
-    });
+  (actionSideEffects.pre || []).forEach((sideEffect) => {
+    store.dispatch(sideEffect);
+  });
 
-    next(action);
+  next(action);
 
-    (actionSideEffects.post || []).forEach((sideEffect) => {
-        store.dispatch(sideEffect);
-    });
+  (actionSideEffects.post || []).forEach((sideEffect) => {
+    store.dispatch(sideEffect);
+  });
 };
 
 export default affectMiddleware;

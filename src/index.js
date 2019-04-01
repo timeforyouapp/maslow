@@ -16,30 +16,37 @@ export { MaslowClient } from './api/client';
 export { MaslowSchema } from './api/schemas';
 export { parseOpenAPItoMaslowConfig } from './api/openapi';
 
-export * from './connectors';
+export * from './connectors/formConnector';
+export * from './connectors/listConnector';
 
-export const _createActionFn = (store, indexedActions) => (actionName, namespace) => (...parameters) => {
-    const actions = indexedActions[namespace];
-    const action = actions[`${actionName}${namespace}`];
-    return store.dispatch(action(...parameters));
+export const createActionFn = (
+  store, indexedActions,
+) => (
+  actionName, namespace,
+) => (
+  ...parameters
+) => {
+  const actions = indexedActions[namespace];
+  const action = actions[`${actionName}${namespace}`];
+  return store.dispatch(action(...parameters));
 };
 
 export const createStoreByModules = (modules, middlewares = []) => {
-    const reducers = {};
-    const indexedActions = {};
+  const reducers = {};
+  const indexedActions = {};
 
-    modules.forEach((modl) => {
-        indexedActions[modl.name] = modl.actions;
-        reducers[modl.name.toLowerCase()] = modl.reducer;
-    });
+  modules.forEach((modl) => {
+    indexedActions[modl.name] = modl.actions;
+    reducers[modl.name.toLowerCase()] = modl.reducer;
+  });
 
-    const store = createStore(combineReducers(reducers), {}, applyMiddleware(...[
-        apiMiddleware,
-        affectMiddleware,
-        ...middlewares
-    ]));
+  const store = createStore(combineReducers(reducers), {}, applyMiddleware(...[
+    apiMiddleware,
+    affectMiddleware,
+    ...middlewares,
+  ]));
 
-    store.dispatch.action = _createActionFn(store, indexedActions);
+  store.dispatch.action = createActionFn(store, indexedActions);
 
-    return store;
+  return store;
 };

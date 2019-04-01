@@ -1,66 +1,76 @@
 import clone from 'fast-clone';
 
 const baseInitialState = {
-    fetchState: 'fresh',
-    errors: [],
-    detail: {},
-    list: [],
+  fetchState: 'fresh',
+  errors: [],
+  detail: {},
+  list: [],
 };
 
 export const ReducerCreator = (types, customInitialState = {}, customReducers = {}) => {
-    const initialState = clone({
-        ...baseInitialState,
-        ...customInitialState,
-    });
+  const initialState = clone({
+    ...baseInitialState,
+    ...customInitialState,
+  });
 
-    const _reducerMap = {
-        [types.set]: (state, payload) => ({
-            ...state,
-            detail: payload
-        }),
-        [types.setAll]: (state, payload) => ({
-            ...state,
-            list: payload,
-        }),
-        [types.clearState]: () => {
-            return clone(initialState);
-        },
-        [types.domainFetchState]: (state) => ({
-            ...state,
-            fetchState: 'fetching',
-        }),
-        [types.domainFetchError]: (state, payload) => ({
-            ...state,
-            fetchState: 'failed',
-            errors: payload,
-        })
-    };
+  const baseReducerMap = {
+    [types.set]: (state, payload) => ({
+      ...state,
+      detail: payload,
+    }),
+    [types.setAll]: (state, payload) => ({
+      ...state,
+      list: payload,
+    }),
+    [types.clearState]: () => clone(initialState),
+    [types.clearFieldError]: (state, payload) => {
+      const newState = { ...state };
 
-    const setFetchTrue = (reducerFn, fetchState) => (state, payload) => {
-        const newState = {...reducerFn(state, payload)};
-        newState.fetchState = fetchState;
+      newState.fetchState = 'dirty';
+      delete newState.errors[payload];
+      return newState;
+    },
+    [types.clearAllErrors]: state => ({
+      ...state,
+      fetchState: 'dirty',
+      errors: {},
+    }),
+    [types.domainFetchState]: state => ({
+      ...state,
+      fetchState: 'fetching',
+    }),
+    [types.domainFetchError]: (state, payload) => ({
+      ...state,
+      fetchState: 'failed',
+      errors: payload,
+    }),
+  };
 
-        return newState;
-    };
+  const setFetchTrue = (reducerFn, fetchState) => (state, payload) => {
+    const newState = { ...reducerFn(state, payload) };
+    newState.fetchState = fetchState;
 
-    const reducerMap = {
-        ..._reducerMap,
-        [types.getDetail.success]: setFetchTrue(_reducerMap[types.set], 'detailFetched'),
-        [types.getList.success]: setFetchTrue(_reducerMap[types.setAll], 'listFetched'),
-        [types.save.success]: setFetchTrue(_reducerMap[types.set], 'saveFetched'),
-        [types.remove.success]: setFetchTrue(_reducerMap[types.clearState], 'removeFetched'),
-        ...customReducers,
-    };
+    return newState;
+  };
 
-    return (state = clone(initialState), action) => {
-        const reducer = reducerMap[action.type];
+  const reducerMap = {
+    ...baseReducerMap,
+    [types.getDetail.success]: setFetchTrue(baseReducerMap[types.set], 'detailFetched'),
+    [types.getList.success]: setFetchTrue(baseReducerMap[types.setAll], 'listFetched'),
+    [types.save.success]: setFetchTrue(baseReducerMap[types.set], 'saveFetched'),
+    [types.remove.success]: setFetchTrue(baseReducerMap[types.clearState], 'removeFetched'),
+    ...customReducers,
+  };
 
-        if (reducer) {
-            return reducer(state, action.payload);
-        }
+  return (state = clone(initialState), action) => {
+    const reducer = reducerMap[action.type];
 
-        return state;
-    };
+    if (reducer) {
+      return reducer(state, action.payload);
+    }
+
+    return state;
+  };
 };
 
 export default ReducerCreator;

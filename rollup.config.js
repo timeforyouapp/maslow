@@ -11,7 +11,9 @@ export default {
         format: 'cjs'
     },
     plugins: [
-        resolve(),
+        resolve({
+            "extensions": [".js", ".jsx"]
+        }),
         babel({ exclude: 'node_modules/**' }),
         commonjs()
     ]
