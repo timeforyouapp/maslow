@@ -10,13 +10,19 @@ export const ActionCreator = (name, types, api, customActions = {}) => ({
   [`_clearState${name}`]: () => ({
     type: types.clearState,
   }),
+  [`setErrors${name}`]: data => ({
+    type: types.setErrors,
+    payload: data,
+  }),
   [`clearFieldError${name}`]: payload => ({
     payload,
     type: types.clearFieldError,
   }),
-  [`clearAllError${name}`]: payload => ({
-    payload,
+  [`clearAllErrors${name}`]: () => ({
     type: types.clearAllErrors,
+  }),
+  [`clearFetchState${name}`]: () => ({
+    type: types.clearFetchState,
   }),
   [`getDetail${name}`]: payload => ({
     payload,

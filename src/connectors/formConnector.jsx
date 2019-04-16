@@ -1,28 +1,42 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const formConnectDecorator = connect => namespace => (Component) => {
+export const formConnectDecorator = (connect, customMapStateToProps, customMapDispatchToProps) => namespace => (Component) => {
   const stateName = namespace.toLowerCase();
 
   const mapStateToProps = (state, { initialValues }) => ({
     fetchState: state[stateName].fetchState,
     errors: state[stateName].errors,
-    initialValues: {
+    values: {
       ...initialValues,
       ...(state[stateName].detail.extractValues ? state[stateName].detail.extractValues() : {}),
     },
+    ...(customMapStateToProps ? customMapStateToProps(state) : {})
   });
 
-  const mapDispatchToProps = dispatch => ({
+  const mapDispatchToProps = (dispatch) => ({
     save: dispatch.action('save', namespace),
     getDetail: dispatch.action('getDetail', namespace),
+    setErrors: dispatch.action('setErrors', namespace),
     clearFieldError: dispatch.action('clearFieldError', namespace),
     clearAllErrors: dispatch.action('clearAllErrors', namespace),
+    validate: dispatch.validate(namespace),
+    ...(customMapDispatchToProps ? customMapDispatchToProps(dispatch) : {})
   });
 
-  const ComponentWrap = ({ getDetail, identifier, fetchState, ...props}) => {
+  const ComponentWrap = ({ getDetail, identifier, fetchState, clearFetchStateAfterSuccess, ...props}) => {
     if (fetchState !== 'fresh' && identifier) {
       getDetail(identifier);
+    }
+
+    if (fetchState === 'saveFetched' && props.afterFetchSuccess) {
+      setTimeout(() => {
+        if (clearFetchStateAfterSuccess) {
+          props.clearAllErrors()
+        }
+
+        props.afterFetchSuccess(props.values)
+      }, 100);
     }
 
     return (<Component {...{ getDetail, fetchState, ...props }} />);

@@ -1,3 +1,8 @@
+const camelize = text => text.replace(/^([A-Z])|[\s-_]+(\w)/g, (_, p1, p2) => {
+  if (p2) return p2.toUpperCase();
+  return p1.toLowerCase();
+});
+
 const mapResources = (resources, maslowSchemas) => {
   const mappedResources = {};
 
@@ -10,19 +15,21 @@ const mapResources = (resources, maslowSchemas) => {
       let schema = null;
       let isArray = false;
 
-      if (response.schema.items) {
-        schema = response.schema.items.$ref;
-        isArray = true;
-      } else {
-        schema = response.schema.$ref;
-      }
+      if (response.schema.items || response.schema.$ref) {
+        if (response.schema.items) {
+          schema = response.schema.items.$ref;
+          isArray = true;
+        } else {
+          schema = response.schema.$ref;
+        }
 
-      schema = maslowSchemas[schema.split('/').reverse()[0]];
+        schema = maslowSchemas[schema.split('/').reverse()[0]];
 
-      if (isArray) {
-        add.transformResponse = data => data.map(schema);
-      } else {
-        add.transformResponse = schema;
+        if (isArray) {
+          add.transformResponse = data => data.map(schema);
+        } else {
+          add.transformResponse = schema;
+        }
       }
     }
 
@@ -50,7 +57,7 @@ const mapResources = (resources, maslowSchemas) => {
   return mappedResources;
 };
 
-const innerSet = (config, [path, ...paths], entity, value) => {
+const innerSet = (config, [path, ...paths], entity, value, deep) => {
   const rentity = entity.replace(/{|}/g, '');
 
   if (!path) {
@@ -62,30 +69,40 @@ const innerSet = (config, [path, ...paths], entity, value) => {
   const rpath = path.replace(/{|}/g, '');
 
   if (rentity === '') {
+    if (deep === 0) {
+      // eslint-disable-next-line
+      value.uri = `/${rpath}`;
+    }
+
     // eslint-disable-next-line
     config[rpath] = value;
     return;
   }
 
   if (paths.length === 0) {
+    if (!config[rpath]) {
+      // eslint-disable-next-line
+      config[rpath] = {}
+    }
+
     // eslint-disable-next-line
     config[rpath][rentity] = value;
     return;
   }
 
-  innerSet(config[rpath], paths, rentity, value);
+  innerSet(config[rpath], paths, rentity, value, deep + 1);
 };
 
 export const parseOpenAPItoMaslowConfig = (openApiFile, maslowSchemas) => {
   const maslowConfig = {};
 
   Object.keys(openApiFile.paths).forEach((path) => {
-    const [entity, ...paths] = path.replace(/^\//, '').split('/').reverse();
+    const [entity, ...paths] = camelize(path).replace(/^\/|\/$/g, '').split('/').reverse();
 
     innerSet(maslowConfig, paths.reverse(), entity, {
       uri: `/${entity}`,
       resources: mapResources(openApiFile.paths[path], maslowSchemas),
-    });
+    }, 0);
   });
 
   return maslowConfig;

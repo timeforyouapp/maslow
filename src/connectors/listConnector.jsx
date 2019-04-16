@@ -16,12 +16,12 @@ export const listConnectorDecorator = connect => namespace => (Component) => {
     clearAllErrors: dispatch.action('clearAllErrors', namespace),
   });
 
-  const ComponentWrap = ({ getDetail, fetchState, ...props}) => {
-    if (fetchState !== 'fresh') {
+  const ComponentWrap = ({ getList, fetchState, ...props}) => {
+    if (fetchState === 'fresh') {
       getList();
     }
 
-    return (<Component {...{ getDetail, fetchState, ...props }} />);
+    return (<Component {...{ getList, fetchState, ...props }} />);
   };
 
   ComponentWrap.propTypes = {

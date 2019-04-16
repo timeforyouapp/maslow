@@ -2,7 +2,7 @@ import clone from 'fast-clone';
 
 const baseInitialState = {
   fetchState: 'fresh',
-  errors: [],
+  errors: {},
   detail: {},
   list: [],
 };
@@ -35,13 +35,21 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
       fetchState: 'dirty',
       errors: {},
     }),
-    [types.domainFetchState]: state => ({
+    [types.clearFetchState]: state => ({
+      ...state,
+      fetchState: 'dirty',
+    }),
+    [types.domainFetching]: state => ({
       ...state,
       fetchState: 'fetching',
     }),
     [types.domainFetchError]: (state, payload) => ({
       ...state,
       fetchState: 'failed',
+      errors: payload,
+    }),
+    [types.setErrors]: (state, payload) => ({
+      ...state,
       errors: payload,
     }),
   };

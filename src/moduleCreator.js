@@ -11,9 +11,11 @@ export const ModuleCreator = (name, api, {
   const baseTypes = {
     set: `SET_${upperName}`,
     setAll: `SET_ALL_${upperName}`,
+    setErrors: `SET_ERRORS_${upperName}`,
     clearFieldError: `CLEAR_FIELD_ERROR_${upperName}`,
     clearAllErrors: `CLEAR_ALL_ERROR_${upperName}`,
     clearState: `CLEAR_${upperName}_STATE`,
+    clearFetchState: `CLEAR_${upperName}_FETCH_STATE`,
     domainFetching: `${upperName}_FETCHING`,
     domainFetchError: `${upperName}_FETCH_ERROR`,
     domainFetchSuccess: key => `${upperName}_${key.toUpperCase()}_FETCH_SUCCESS`,
@@ -52,11 +54,12 @@ export const ModuleCreator = (name, api, {
   delete actionTypes.domainFetchSuccess;
 
   const cReducers = typeof customReducers === 'function' ? customReducers(actionTypes) : customReducers;
+  const cActions = typeof customActions === 'function' ? customActions(actionTypes) : customActions;
 
   return {
     name,
     actionTypes,
-    actions: ActionCreator(name, actionTypes, api, customActions),
+    actions: ActionCreator(name, actionTypes, api, cActions),
     reducer: ReducerCreator(actionTypes, customInitialState, cReducers),
   };
 };

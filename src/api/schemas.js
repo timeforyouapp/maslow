@@ -47,12 +47,19 @@ export const createJoiValidator = (propInfo) => {
     validator = joi.number();
   }
 
+  if (propInfo.type === 'boolean') {
+    validator = joi.boolean();
+  }
+
   if (propInfo.type === 'array') {
     validator = joi.array().items(
       createJoiValidator(propInfo.items),
     );
   }
 
+  if (propInfo.type === 'object') {
+    validator = joi.object();
+  }
 
   if (!propInfo['x-nullable']) {
     validator = validator.required();
@@ -92,10 +99,10 @@ export function MaslowSchema(properties) {
 
     Object.keys(schemaItems).forEach((key) => {
       if (typeof schemaItems[key] === 'string') {
-        schemaItems[key] = otherSchemas[key].getJoiSchema();
+        schemaItems[key] = otherSchemas[schemaItems[key]].getJoiSchema();
       }
 
-      if (schemaItems[key].describe().type === 'any') {
+      if (schemaItems[key].describe && schemaItems[key].describe().type === 'any') {
         readOnly.push(key);
       }
 
@@ -157,12 +164,13 @@ export function MaslowSchema(properties) {
             schema = globalJoiValidator(joi, schema);
           }
 
+          const realValues = methods.parse({ ...innerValues });
           Object.keys(innerValues).forEach((key) => {
             if (readOnly.indexOf(key) > -1) {
               return;
             }
 
-            validValues[key] = innerValues[key];
+            validValues[key] = realValues[key];
           });
 
           resolve(joi.assert(validValues, schema));

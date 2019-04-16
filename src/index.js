@@ -31,7 +31,14 @@ export const createActionFn = (
   return store.dispatch(action(...parameters));
 };
 
-export const createStoreByModules = (modules, middlewares = []) => {
+export const createStoreByModules = (
+  modules,
+  {
+    middlewares = [],
+    enhancers = [],
+    schemas = {},
+  } = {},
+) => {
   const reducers = {};
   const indexedActions = {};
 
@@ -40,13 +47,21 @@ export const createStoreByModules = (modules, middlewares = []) => {
     reducers[modl.name.toLowerCase()] = modl.reducer;
   });
 
-  const store = createStore(combineReducers(reducers), {}, applyMiddleware(...[
+  let finalMiddleware = applyMiddleware(...[
     apiMiddleware,
     affectMiddleware,
     ...middlewares,
-  ]));
+  ]);
+
+  // @TODO: Fix Enhancers
+  enhancers.forEach((enhancer) => {
+    finalMiddleware = enhancer(finalMiddleware);
+  });
+
+  const store = createStore(combineReducers(reducers), {}, finalMiddleware);
 
   store.dispatch.action = createActionFn(store, indexedActions);
+  store.dispatch.validate = entity => data => schemas[entity](data).validate();
 
   return store;
 };

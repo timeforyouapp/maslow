@@ -2,7 +2,7 @@ const mapResources = (api, uri, resources) => {
   const r = {};
 
   Object.keys(resources).forEach((key) => {
-    r[key] = (body) => {
+    r[key] = (body = {}) => {
       const re = resources[key];
       const treq = re.transformRequest || (d => d);
       const tres = re.transformResponse || (d => d);
@@ -11,6 +11,7 @@ const mapResources = (api, uri, resources) => {
       const execValidate = finalBody.validate
         ? finalBody.validate
         : () => Promise.resolve();
+
 
       return execValidate().then(() => api[re.method](
         `${uri}${re.uri}`,
@@ -23,10 +24,21 @@ const mapResources = (api, uri, resources) => {
 };
 
 
-const client = (api, { uri, resources, ...innerPaths }) => {
+const client = (api, { uri, resources = {}, ...innerPaths }) => {
   const mappedInnerPaths = {};
 
   Object.keys(innerPaths).forEach((path) => {
+    if (!innerPaths[path].uri) {
+      if (Object.keys(innerPaths[path]).length !== 0) {
+        mappedInnerPaths[path] = client(api, {
+          ...innerPaths[path],
+          uri: `${uri}/${path}`,
+        });
+      }
+
+      return;
+    }
+
     if (innerPaths[path].uri.match(/{.*}/g)) {
       mappedInnerPaths[path] = value => client(api, {
         ...innerPaths[path],

@@ -7,6 +7,9 @@ export const AxiosWrapper = ({
 }) => {
   const axiosClient = axios.create({
     baseURL: baseUri,
+    validateStatus(status) {
+      return status >= 200 && status < 300; // default
+    },
   });
 
   axiosClient.preFetch = preFetch;
