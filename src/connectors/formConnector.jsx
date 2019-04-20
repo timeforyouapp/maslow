@@ -24,12 +24,25 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     ...(customMapDispatchToProps ? customMapDispatchToProps(dispatch) : {})
   });
 
-  const ComponentWrap = ({ getDetail, identifier, fetchState, clearFetchStateAfterSuccess, ...props}) => {
+  const ComponentWrap = ({
+    getDetail,
+    identifier,
+    fetchState,
+    clearFetchStateAfterSuccess,
+    fetchStateSuccessProp,
+    fetchStateSuccessValue,
+    ...props}) => {
     if (fetchState !== 'fresh' && identifier) {
       getDetail(identifier);
     }
 
-    if (fetchState === 'saveFetched' && props.afterFetchSuccess) {
+    if (
+      (
+        (fetchStateSuccessProp && fetchStateSuccessProp == fetchStateSuccessValue) ||
+        fetchState === 'saveFetched'
+      )
+      && props.afterFetchSuccess
+    ) {
       setTimeout(() => {
         if (clearFetchStateAfterSuccess) {
           props.clearAllErrors()
