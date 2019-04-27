@@ -12,6 +12,7 @@ export const ModuleCreator = (name, api, {
     set: `SET_${upperName}`,
     setAll: `SET_ALL_${upperName}`,
     setErrors: `SET_ERRORS_${upperName}`,
+    setFetchState: `SET_FETCH_STATE_${upperName}`,
     clearFieldError: `CLEAR_FIELD_ERROR_${upperName}`,
     clearAllErrors: `CLEAR_ALL_ERROR_${upperName}`,
     clearState: `CLEAR_${upperName}_STATE`,

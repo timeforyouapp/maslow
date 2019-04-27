@@ -24,10 +24,10 @@ export const apiMiddleware = store => next => (action) => {
       return error;
     }
 
-    const dispatch = { type: types.error, payload: error }
+    const dispatch = { type: types.error, payload: error };
 
     if (error.response) {
-      dispatch.payload = error.response.data.payload
+      dispatch.payload = error.response.data.payload;
     }
 
     store.dispatch(dispatch);

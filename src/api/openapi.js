@@ -62,7 +62,7 @@ const innerSet = (config, [path, ...paths], entity, value, deep) => {
 
   if (!path) {
     // eslint-disable-next-line
-    config[rentity] = value;
+    config[camelize(rentity)] = value;
     return;
   }
 
@@ -75,18 +75,18 @@ const innerSet = (config, [path, ...paths], entity, value, deep) => {
     }
 
     // eslint-disable-next-line
-    config[rpath] = value;
+    config[camelize(rpath)] = value;
     return;
   }
 
   if (paths.length === 0) {
-    if (!config[rpath]) {
+    if (!config[camelize(rpath)]) {
       // eslint-disable-next-line
-      config[rpath] = {}
+      config[camelize(rpath)] = {}
     }
 
     // eslint-disable-next-line
-    config[rpath][rentity] = value;
+    config[camelize(rpath)][camelize(rentity)] = value;
     return;
   }
 
@@ -97,7 +97,7 @@ export const parseOpenAPItoMaslowConfig = (openApiFile, maslowSchemas) => {
   const maslowConfig = {};
 
   Object.keys(openApiFile.paths).forEach((path) => {
-    const [entity, ...paths] = camelize(path).replace(/^\/|\/$/g, '').split('/').reverse();
+    const [entity, ...paths] = path.replace(/^\/|\/$/g, '').split('/').reverse();
 
     innerSet(maslowConfig, paths.reverse(), entity, {
       uri: `/${entity}`,

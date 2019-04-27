@@ -7,7 +7,27 @@ const baseInitialState = {
   list: [],
 };
 
-export const ReducerCreator = (types, customInitialState = {}, customReducers = {}) => {
+const includeOnListOrUpdate = (idLabel, list, payload) => {
+  let changeOnList = false;
+
+  const newList = list.map((item) => {
+    if (item[idLabel] === payload[idLabel]) {
+      changeOnList = true;
+      return { ...item, ...payload };
+    }
+
+    return item;
+  });
+
+  if (!changeOnList) {
+    newList.push(payload);
+  }
+
+  return newList;
+};
+
+
+export const ReducerCreator = (types, customInitialState = {}, customReducers = {}, customIdLabel = 'id') => {
   const initialState = clone({
     ...baseInitialState,
     ...customInitialState,
@@ -21,6 +41,10 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     [types.setAll]: (state, payload) => ({
       ...state,
       list: payload,
+    }),
+    [types.setFetchState]: (state, payload) => ({
+      ...state,
+      fetchState: payload,
     }),
     [types.clearState]: () => clone(initialState),
     [types.clearFieldError]: (state, payload) => {
@@ -54,9 +78,14 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     }),
   };
 
-  const setFetchTrue = (reducerFn, fetchState) => (state, payload) => {
+  const setFetchTrue = (reducerFn, fetchState, changeOnList) => (state, payload) => {
     const newState = { ...reducerFn(state, payload) };
+
     newState.fetchState = fetchState;
+
+    if (changeOnList) {
+      newState.list = includeOnListOrUpdate(customIdLabel, newState.list, payload);
+    }
 
     return newState;
   };
@@ -65,7 +94,7 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     ...baseReducerMap,
     [types.getDetail.success]: setFetchTrue(baseReducerMap[types.set], 'detailFetched'),
     [types.getList.success]: setFetchTrue(baseReducerMap[types.setAll], 'listFetched'),
-    [types.save.success]: setFetchTrue(baseReducerMap[types.set], 'saveFetched'),
+    [types.save.success]: setFetchTrue(baseReducerMap[types.set], 'saveFetched', true),
     [types.remove.success]: setFetchTrue(baseReducerMap[types.clearState], 'removeFetched'),
     ...customReducers,
   };

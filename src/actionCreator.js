@@ -1,17 +1,21 @@
 export const ActionCreator = (name, types, api, customActions = {}) => ({
-  [`_set${name}`]: item => ({
+  [`set${name}`]: item => ({
     type: types.set,
     payload: item,
   }),
-  [`_setAll${name}`]: items => ({
+  [`setAll${name}`]: items => ({
     type: types.setAll,
     payload: items,
   }),
-  [`_clearState${name}`]: () => ({
+  [`clearState${name}`]: () => ({
     type: types.clearState,
   }),
   [`setErrors${name}`]: data => ({
     type: types.setErrors,
+    payload: data,
+  }),
+  [`setFetchState${name}`]: data => ({
+    type: types.setFetchState,
     payload: data,
   }),
   [`clearFieldError${name}`]: payload => ({

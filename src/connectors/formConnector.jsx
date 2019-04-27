@@ -1,16 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { checkFetchState } from './utils';
+
 export const formConnectDecorator = (connect, customMapStateToProps, customMapDispatchToProps) => namespace => (Component) => {
   const stateName = namespace.toLowerCase();
 
-  const mapStateToProps = (state, { initialValues }) => ({
+  const mapStateToProps = (state) => ({
     fetchState: state[stateName].fetchState,
     errors: state[stateName].errors,
-    values: {
-      ...initialValues,
-      ...(state[stateName].detail.extractValues ? state[stateName].detail.extractValues() : {}),
-    },
+    detailData: state[stateName].detail.extractValues ? state[stateName].detail.extractValues() : null,
     ...(customMapStateToProps ? customMapStateToProps(state) : {})
   });
 
@@ -20,6 +19,7 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     setErrors: dispatch.action('setErrors', namespace),
     clearFieldError: dispatch.action('clearFieldError', namespace),
     clearAllErrors: dispatch.action('clearAllErrors', namespace),
+    setFetchState: dispatch.action('setFetchState', namespace),
     validate: dispatch.validate(namespace),
     ...(customMapDispatchToProps ? customMapDispatchToProps(dispatch) : {})
   });
@@ -28,27 +28,42 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     getDetail,
     identifier,
     fetchState,
+    detailData,
+    setFetchState,
+    setInitialValues,
     clearFetchStateAfterSuccess,
     fetchStateSuccessProp,
     fetchStateSuccessValue,
-    ...props}) => {
-    if (fetchState !== 'fresh' && identifier) {
-      getDetail(identifier);
+    ...props
+  }) => {
+    if (
+      !checkFetchState(fetchState, [ 'valuesOnForm', 'detailFetched', 'fetching' ])
+      && identifier
+    ) {
+      setTimeout(() => {
+        getDetail(identifier);
+      }, 100);
+    }
+
+    if (!!detailData && fetchState === 'detailFetched' && setInitialValues) {
+      setTimeout(() => {
+        setFetchState('valuesOnForm');
+        setInitialValues(detailData);
+      }, 200);
     }
 
     if (
-      (
-        (fetchStateSuccessProp && fetchStateSuccessProp == fetchStateSuccessValue) ||
-        fetchState === 'saveFetched'
-      )
-      && props.afterFetchSuccess
+      (fetchStateSuccessProp && fetchStateSuccessProp == fetchStateSuccessValue) ||
+      fetchState === 'saveFetched'
     ) {
       setTimeout(() => {
         if (clearFetchStateAfterSuccess) {
           props.clearAllErrors()
         }
 
-        props.afterFetchSuccess(props.values)
+        if (props.afterFetchSuccess) {
+          props.afterFetchSuccess(props.values)
+        }
       }, 100);
     }
 

@@ -27,11 +27,13 @@ const mapResources = (api, uri, resources) => {
 const client = (api, { uri, resources = {}, ...innerPaths }) => {
   const mappedInnerPaths = {};
 
-  Object.keys(innerPaths).forEach((path) => {
-    if (!innerPaths[path].uri) {
-      if (Object.keys(innerPaths[path]).length !== 0) {
-        mappedInnerPaths[path] = client(api, {
-          ...innerPaths[path],
+  Object.keys(innerPaths).forEach((pathProp) => {
+    const path = (innerPaths[pathProp] || {}).uri ? innerPaths[pathProp].uri.replace('/', '') : pathProp;
+
+    if (!innerPaths[pathProp].uri) {
+      if (Object.keys(innerPaths[pathProp]).length !== 0) {
+        mappedInnerPaths[pathProp] = client(api, {
+          ...innerPaths[pathProp],
           uri: `${uri}/${path}`,
         });
       }
@@ -39,14 +41,14 @@ const client = (api, { uri, resources = {}, ...innerPaths }) => {
       return;
     }
 
-    if (innerPaths[path].uri.match(/{.*}/g)) {
-      mappedInnerPaths[path] = value => client(api, {
-        ...innerPaths[path],
+    if (innerPaths[pathProp].uri.match(/{.*}/g)) {
+      mappedInnerPaths[pathProp] = value => client(api, {
+        ...innerPaths[pathProp],
         uri: `${uri}/${value}`,
       });
     } else {
-      mappedInnerPaths[path] = client(api, {
-        ...innerPaths[path],
+      mappedInnerPaths[pathProp] = client(api, {
+        ...innerPaths[pathProp],
         uri: `${uri}/${path}`,
       });
     }
