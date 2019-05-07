@@ -74,3 +74,5 @@ website/i18n/*
 #builds
 build
 dist
+
+.idea/
