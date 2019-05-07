@@ -1,7 +1,7 @@
 const camelize = text => text.replace(/^([A-Z])|[\s-_]+(\w)/g, (_, p1, p2) => {
-  if (p2) return p2.toUpperCase();
-  return p1.toLowerCase();
-});
+    if (p2) return p2.toUpperCase();
+    return p1.toLowerCase();
+  });
 
 const mapResources = (resources, maslowSchemas) => {
   const mappedResources = {};
@@ -62,7 +62,7 @@ const innerSet = (config, [path, ...paths], entity, value, deep) => {
 
   if (!path) {
     // eslint-disable-next-line
-    config[camelize(rentity)] = value;
+		config[camelize(rentity)] = value;
     return;
   }
 
@@ -71,38 +71,47 @@ const innerSet = (config, [path, ...paths], entity, value, deep) => {
   if (rentity === '') {
     if (deep === 0) {
       // eslint-disable-next-line
-      value.uri = `/${rpath}`;
+			value.uri = `/${rpath}`;
     }
 
     // eslint-disable-next-line
-    config[camelize(rpath)] = value;
+		config[camelize(rpath)] = value;
     return;
   }
 
   if (paths.length === 0) {
     if (!config[camelize(rpath)]) {
       // eslint-disable-next-line
-      config[camelize(rpath)] = {}
+			config[camelize(rpath)] = {};
     }
 
     // eslint-disable-next-line
-    config[camelize(rpath)][camelize(rentity)] = value;
+		config[camelize(rpath)][camelize(rentity)] = value;
     return;
   }
 
-  innerSet(config[rpath], paths, rentity, value, deep + 1);
+  innerSet(config[camelize(rpath)], paths, rentity, value, deep + 1);
 };
 
 export const parseOpenAPItoMaslowConfig = (openApiFile, maslowSchemas) => {
   const maslowConfig = {};
 
   Object.keys(openApiFile.paths).forEach((path) => {
-    const [entity, ...paths] = path.replace(/^\/|\/$/g, '').split('/').reverse();
+    const [entity, ...paths] = path
+      .replace(/^\/|\/$/g, '')
+      .split('/')
+      .reverse();
 
-    innerSet(maslowConfig, paths.reverse(), entity, {
-      uri: `/${entity}`,
-      resources: mapResources(openApiFile.paths[path], maslowSchemas),
-    }, 0);
+    innerSet(
+      maslowConfig,
+      paths.reverse(),
+      entity,
+      {
+        uri: `/${entity}`,
+        resources: mapResources(openApiFile.paths[path], maslowSchemas),
+      },
+      0,
+    );
   });
 
   return maslowConfig;

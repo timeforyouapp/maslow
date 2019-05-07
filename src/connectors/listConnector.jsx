@@ -1,27 +1,33 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-export const listConnectorDecorator = connect => namespace => (Component) => {
+export const listConnectorDecorator = (
+  connect,
+  customMapStateToProps,
+  customMapDispatchToProps,
+) => namespace => (Component) => {
   const stateName = namespace.toLowerCase();
 
-  const mapStateToProps = (state) => ({
+  const mapStateToProps = state => ({
     fetchState: state[stateName].fetchState,
     errors: state[stateName].errors.non_field_error,
     items: state[stateName].list,
+    ...(customMapStateToProps ? customMapStateToProps(state) : {}),
   });
 
   const mapDispatchToProps = dispatch => ({
     getList: dispatch.action('getList', namespace),
     getDetail: dispatch.action('getDetail', namespace),
     clearAllErrors: dispatch.action('clearAllErrors', namespace),
+    ...(customMapDispatchToProps ? customMapDispatchToProps(dispatch) : {}),
   });
 
-  const ComponentWrap = ({ getList, fetchState, ...props}) => {
+  const ComponentWrap = ({ getList, fetchState, ...props }) => {
     if (fetchState === 'fresh') {
       getList();
     }
 
-    return (<Component {...{ getList, fetchState, ...props }} />);
+    return <Component {...{ getList, fetchState, ...props }} />;
   };
 
   ComponentWrap.propTypes = {
@@ -30,13 +36,16 @@ export const listConnectorDecorator = connect => namespace => (Component) => {
     getList: PropTypes.func.isRequired,
     clearAllErrors: PropTypes.func.isRequired,
     fetchState: PropTypes.string.isRequired,
-  }
+  };
 
   ComponentWrap.defaultProps = {
     errors: {},
-  }
+  };
 
-  return connect(mapStateToProps, mapDispatchToProps)(ComponentWrap);
+  return connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(ComponentWrap);
 };
 
 export default listConnectorDecorator;

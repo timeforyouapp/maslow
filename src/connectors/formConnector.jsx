@@ -3,17 +3,23 @@ import PropTypes from 'prop-types';
 
 import { checkFetchState } from './utils';
 
-export const formConnectDecorator = (connect, customMapStateToProps, customMapDispatchToProps) => namespace => (Component) => {
+export const formConnectDecorator = (
+  connect,
+  customMapStateToProps,
+  customMapDispatchToProps,
+) => namespace => (Component) => {
   const stateName = namespace.toLowerCase();
 
-  const mapStateToProps = (state) => ({
+  const mapStateToProps = state => ({
     fetchState: state[stateName].fetchState,
     errors: state[stateName].errors,
-    detailData: state[stateName].detail.extractValues ? state[stateName].detail.extractValues() : null,
-    ...(customMapStateToProps ? customMapStateToProps(state) : {})
+    detailData: state[stateName].detail.extractValues
+      ? state[stateName].detail.extractValues()
+      : null,
+    ...(customMapStateToProps ? customMapStateToProps(state) : {}),
   });
 
-  const mapDispatchToProps = (dispatch) => ({
+  const mapDispatchToProps = dispatch => ({
     save: dispatch.action('save', namespace),
     getDetail: dispatch.action('getDetail', namespace),
     setErrors: dispatch.action('setErrors', namespace),
@@ -21,7 +27,7 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     clearAllErrors: dispatch.action('clearAllErrors', namespace),
     setFetchState: dispatch.action('setFetchState', namespace),
     validate: dispatch.validate(namespace),
-    ...(customMapDispatchToProps ? customMapDispatchToProps(dispatch) : {})
+    ...(customMapDispatchToProps ? customMapDispatchToProps(dispatch) : {}),
   });
 
   const ComponentWrap = ({
@@ -37,8 +43,12 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     ...props
   }) => {
     if (
-      !checkFetchState(fetchState, [ 'valuesOnForm', 'detailFetched', 'fetching' ])
-      && identifier
+      !checkFetchState(fetchState, [
+        'valuesOnForm',
+        'detailFetched',
+        'fetching',
+      ])
+			&& identifier
     ) {
       setTimeout(() => {
         getDetail(identifier);
@@ -53,21 +63,22 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     }
 
     if (
-      (fetchStateSuccessProp && fetchStateSuccessProp == fetchStateSuccessValue) ||
-      fetchState === 'saveFetched'
+      (fetchStateSuccessProp
+				&& fetchStateSuccessProp == fetchStateSuccessValue)
+			|| fetchState === 'saveFetched'
     ) {
       setTimeout(() => {
         if (clearFetchStateAfterSuccess) {
-          props.clearAllErrors()
+          props.clearAllErrors();
         }
 
         if (props.afterFetchSuccess) {
-          props.afterFetchSuccess(props.values)
+          props.afterFetchSuccess(props.values);
         }
       }, 100);
     }
 
-    return (<Component {...{ getDetail, fetchState, ...props }} />);
+    return <Component {...{ getDetail, fetchState, ...props }} />;
   };
 
   ComponentWrap.propTypes = {
@@ -75,14 +86,17 @@ export const formConnectDecorator = (connect, customMapStateToProps, customMapDi
     errors: PropTypes.object,
     getDetail: PropTypes.func.isRequired,
     fetchState: PropTypes.string.isRequired,
-  }
+  };
 
   ComponentWrap.defaultProps = {
     identifier: null,
     errors: {},
-  }
+  };
 
-  return connect(mapStateToProps, mapDispatchToProps)(ComponentWrap);
+  return connect(
+    mapStateToProps,
+    mapDispatchToProps,
+  )(ComponentWrap);
 };
 
 export default formConnectDecorator;
