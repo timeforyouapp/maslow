@@ -1,6 +1,6 @@
 {
   "name": "@timeforyou/maslow",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A redux generic module creator for api stuff",
   "main": "dist/bundle.js",
   "directories": {

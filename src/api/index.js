@@ -5,8 +5,9 @@ import { parseOpenAPItoMaslowConfig } from './openapi';
 
 export const MaslowAPI = (baseUri, config, opts) => {
   const maslowSchemas = {};
+
   Object.keys(config.definitions).forEach((name) => {
-    maslowSchemas[name] = MaslowSchema(config.definitions[name].properties, maslowSchemas);
+    maslowSchemas[name] = MaslowSchema(config.definitions[name], maslowSchemas);
   });
 
   Object.keys(maslowSchemas).forEach((name) => {

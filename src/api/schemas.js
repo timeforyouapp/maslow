@@ -6,7 +6,7 @@ const camelize = text => text.replace(/^([A-Z])|[\s-_]+(\w)/g, (_, p1, p2) => {
   return p1.toLowerCase();
 });
 
-export const createJoiValidator = (propInfo) => {
+export const createJoiValidator = (propInfo, isRequired) => {
   let validator = null;
 
   if (propInfo.$ref) {
@@ -61,7 +61,7 @@ export const createJoiValidator = (propInfo) => {
     validator = joi.object();
   }
 
-  if (!propInfo['x-nullable']) {
+  if (isRequired) {
     validator = validator.required();
   } else {
     validator = validator.allow('');
@@ -70,22 +70,22 @@ export const createJoiValidator = (propInfo) => {
   return validator;
 };
 
-export const createNodeSchema = (properties) => {
+export const createNodeSchema = (properties, requiredFields) => {
   const schema = {};
 
   Object.keys(properties).forEach((prop) => {
     const propInfo = properties[prop];
     const parsedProp = camelize(prop);
-    schema[parsedProp] = createJoiValidator(propInfo);
+    schema[parsedProp] = createJoiValidator(propInfo, requiredFields.indexOf(prop) !== -1);
   });
 
   return schema;
 };
 
-export function MaslowSchema(properties) {
+export function MaslowSchema({ properties, required = []}) {
   let otherSchemas = null;
   let globalJoiValidator = null;
-  const schemaItems = createNodeSchema(properties);
+  const schemaItems = createNodeSchema(properties, required);
   const methods = {
     parse: values => values,
   };
