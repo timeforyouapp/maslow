@@ -6,6 +6,8 @@ export const ModuleCreator = (name, api, {
   customReducers = {},
   customActions = {},
   customActionTypes = {},
+  customIdLabel,
+  customSetError,
 } = {}) => {
   const upperName = name.toUpperCase();
   const baseTypes = {
@@ -13,6 +15,7 @@ export const ModuleCreator = (name, api, {
     setAll: `SET_ALL_${upperName}`,
     setErrors: `SET_ERRORS_${upperName}`,
     setFetchState: `SET_FETCH_STATE_${upperName}`,
+    deleteItem: `DELETE_ITEM_${upperName}`,
     clearFieldError: `CLEAR_FIELD_ERROR_${upperName}`,
     clearAllErrors: `CLEAR_ALL_ERROR_${upperName}`,
     clearState: `CLEAR_${upperName}_STATE`,
@@ -61,7 +64,7 @@ export const ModuleCreator = (name, api, {
     name,
     actionTypes,
     actions: ActionCreator(name, actionTypes, api, cActions),
-    reducer: ReducerCreator(actionTypes, customInitialState, cReducers),
+    reducer: ReducerCreator(actionTypes, customInitialState, cReducers, customIdLabel, customSetError),
   };
 };
 

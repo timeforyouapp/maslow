@@ -1,6 +1,6 @@
 {
   "name": "@timeforyou/maslow",
-  "version": "1.0.1",
+  "version": "1.0.6",
   "description": "A redux generic module creator for api stuff",
   "main": "dist/bundle.js",
   "directories": {
@@ -37,7 +37,7 @@
   },
   "homepage": "https://github.com/timeforyouapp/maslow#readme",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "docusaurus-init": "^1.0.2",
     "fast-clone": "^1.5.3",
     "joi-browser": "^13.4.0",

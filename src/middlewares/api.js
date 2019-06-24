@@ -16,18 +16,14 @@ export const apiMiddleware = store => next => (action) => {
   }
 
   return action.api(action.payload).then((payload) => {
+    payload.__proto__.prev_payload = action.payload;
     store.dispatch({ type: types.success, payload });
     return payload;
   }).catch((error) => {
-    console.log(error);
-    if (!types.error) {
-      return error;
-    }
-
     const dispatch = { type: types.error, payload: error };
 
     if (error.response) {
-      dispatch.payload = error.response.data.payload;
+      dispatch.payload = error.response.data.payload || error.response.data;
     }
 
     store.dispatch(dispatch);

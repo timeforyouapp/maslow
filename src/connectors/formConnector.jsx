@@ -43,12 +43,16 @@ export const formConnectDecorator = (
     ...props
   }) => {
     if (
-      !checkFetchState(fetchState, [
+      (!checkFetchState(fetchState, [
         'valuesOnForm',
         'detailFetched',
         'fetching',
       ])
-			&& identifier
+      && identifier) ||
+      (
+        !!detailData
+        && detailData.id !== identifier
+      )
     ) {
       setTimeout(() => {
         getDetail(identifier);

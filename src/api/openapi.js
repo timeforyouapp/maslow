@@ -1,14 +1,14 @@
 const camelize = text => text.replace(/^([A-Z])|[\s-_]+(\w)/g, (_, p1, p2) => {
-    if (p2) return p2.toUpperCase();
-    return p1.toLowerCase();
-  });
+  if (p2) return p2.toUpperCase();
+  return p1.toLowerCase();
+});
 
 const mapResources = (resources, maslowSchemas) => {
   const mappedResources = {};
 
   Object.keys(resources).forEach((method) => {
     const add = {};
-    const response = resources[method].responses.default;
+    const response = resources[method].responses['200'];
     const params = resources[method].parameters || [];
 
     if (response) {

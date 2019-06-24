@@ -27,7 +27,7 @@ const includeOnListOrUpdate = (idLabel, list, payload) => {
 };
 
 
-export const ReducerCreator = (types, customInitialState = {}, customReducers = {}, customIdLabel = 'id') => {
+export const ReducerCreator = (types, customInitialState = {}, customReducers = {}, customIdLabel = 'id', customSetError) => {
   const initialState = clone({
     ...baseInitialState,
     ...customInitialState,
@@ -37,6 +37,13 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     [types.set]: (state, payload) => ({
       ...state,
       detail: payload,
+      list: state.list.map((item) => {
+        if (item.id === payload.__proto__.prev_payload) {
+          return payload;
+        }
+
+        return item;
+      }),
     }),
     [types.setAll]: (state, payload) => ({
       ...state,
@@ -54,6 +61,14 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
       delete newState.errors[payload];
       return newState;
     },
+    [types.deleteItem]: (state, payload) => ({
+      ...state,
+      fetchState: 'dirty',
+      detail: {},
+      list: state.list.filter(({ id }) => {
+        return id !== payload.__proto__.prev_payload;
+      }),
+    }),
     [types.clearAllErrors]: state => ({
       ...state,
       fetchState: 'dirty',
@@ -67,15 +82,19 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
       ...state,
       fetchState: 'fetching',
     }),
-    [types.domainFetchError]: (state, payload) => ({
+    [types.domainFetchError]: (state, payload) => {
+      console.log(customSetError);
+      return ({
       ...state,
       fetchState: 'failed',
-      errors: payload,
-    }),
-    [types.setErrors]: (state, payload) => ({
+      errors: customSetError ? customSetError(payload) : payload,
+    })},
+    [types.setErrors]: (state, payload) => {
+      console.log(customSetError);
+      return ({
       ...state,
-      errors: payload,
-    }),
+      errors: customSetError ? customSetError(payload) : payload,
+    })},
   };
 
   const setFetchTrue = (reducerFn, fetchState, changeOnList) => (state, payload) => {
@@ -95,7 +114,7 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     [types.getDetail.success]: setFetchTrue(baseReducerMap[types.set], 'detailFetched'),
     [types.getList.success]: setFetchTrue(baseReducerMap[types.setAll], 'listFetched'),
     [types.save.success]: setFetchTrue(baseReducerMap[types.set], 'saveFetched', true),
-    [types.remove.success]: setFetchTrue(baseReducerMap[types.clearState], 'removeFetched'),
+    [types.remove.success]: setFetchTrue(baseReducerMap[types.deleteItem], 'removeFetched'),
     ...customReducers,
   };
 
