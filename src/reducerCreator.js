@@ -82,19 +82,15 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
       ...state,
       fetchState: 'fetching',
     }),
-    [types.domainFetchError]: (state, payload) => {
-      console.log(customSetError);
-      return ({
+    [types.domainFetchError]: (state, payload) => ({
       ...state,
       fetchState: 'failed',
       errors: customSetError ? customSetError(payload) : payload,
-    })},
-    [types.setErrors]: (state, payload) => {
-      console.log(customSetError);
-      return ({
+    }),
+    [types.setErrors]: (state, payload) => ({
       ...state,
       errors: customSetError ? customSetError(payload) : payload,
-    })},
+    }),
   };
 
   const setFetchTrue = (reducerFn, fetchState, changeOnList) => (state, payload) => {

@@ -20,6 +20,7 @@ export const apiMiddleware = store => next => (action) => {
     store.dispatch({ type: types.success, payload });
     return payload;
   }).catch((error) => {
+    console.log(error)
     const dispatch = { type: types.error, payload: error };
 
     if (error.response) {
