@@ -1,6 +1,6 @@
 import { combineReducers, createStore, applyMiddleware } from 'redux';
 
-import { apiMiddleware, affectMiddleware } from './middlewares';
+import { apiMiddleware, affectMiddleware, blockMiddleware } from './middlewares';
 
 import actionCreator from './actionCreator';
 import moduleCreator from './moduleCreator';
@@ -20,7 +20,9 @@ export * from './connectors/formConnector';
 export * from './connectors/listConnector';
 
 export const createActionFn = (
-  store, indexedActions,
+  indexedActions
+) => (
+  store,
 ) => (
   actionName, namespace,
 ) => (
@@ -37,6 +39,7 @@ export const createStoreByModules = (
     middlewares = [],
     enhancers = [],
     schemas = {},
+    api,
   } = {},
 ) => {
   const reducers = {};
@@ -47,8 +50,11 @@ export const createStoreByModules = (
     reducers[modl.name.toLowerCase()] = modl.reducer;
   });
 
+  const actionMaker = createActionFn(indexedActions);
+
   let finalMiddleware = applyMiddleware(...[
-    apiMiddleware,
+    blockMiddleware,
+    apiMiddleware(api, actionMaker),
     affectMiddleware,
     ...middlewares,
   ]);
@@ -60,8 +66,9 @@ export const createStoreByModules = (
 
   const store = createStore(combineReducers(reducers), {}, finalMiddleware);
 
-  store.dispatch.action = createActionFn(store, indexedActions);
+  store.dispatch.action = actionMaker(store);
   store.dispatch.validate = entity => data => schemas[entity](data).validate();
+  store.dispatch.api = api;
 
   return store;
 };

@@ -1,4 +1,4 @@
-export const apiMiddleware = store => next => (action) => {
+export const apiMiddleware = (apiConfig, actionMaker) => store => next => (action) => {
   if (!action.api) {
     return Promise.resolve(next(action));
   }
@@ -17,18 +17,24 @@ export const apiMiddleware = store => next => (action) => {
 
   return action.api(action.payload).then((payload) => {
     payload.__proto__.prev_payload = action.payload;
-    store.dispatch({ type: types.success, payload });
+    next({ type: types.success, payload });
     return payload;
   }).catch((error) => {
-    console.log(error)
-    const dispatch = { type: types.error, payload: error };
+    if (error.response && apiConfig) {
+      const handlr = apiConfig.statusHandler[error.response.status] || apiConfig.statusHandler.default;
 
-    if (error.response) {
-      dispatch.payload = error.response.data.payload || error.response.data;
+      if (handlr) {
+        const dispatchObj = handlr({ type: types.error }, error, {
+          store, api: apiConfig, action, actionCaller: actionMaker(store),
+        });
+
+        return dispatchObj ? next(dispatchObj) : null;
+      }
     }
 
-    store.dispatch(dispatch);
+    console.error(error);
   });
+
 };
 
 export default apiMiddleware;

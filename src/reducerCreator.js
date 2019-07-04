@@ -85,11 +85,11 @@ export const ReducerCreator = (types, customInitialState = {}, customReducers = 
     [types.domainFetchError]: (state, payload) => ({
       ...state,
       fetchState: 'failed',
-      errors: customSetError ? customSetError(payload) : payload,
+      errors: (customSetError ? customSetError(payload) : payload) || {},
     }),
     [types.setErrors]: (state, payload) => ({
       ...state,
-      errors: customSetError ? customSetError(payload) : payload,
+      errors: (customSetError ? customSetError(payload) : payload) || {},
     }),
   };
 

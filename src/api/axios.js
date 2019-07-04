@@ -28,6 +28,7 @@ export const AxiosWrapper = ({
 
   return {
     axiosClient,
+    statusHandler: {},
     setPreFetch: (newPreFetch) => {
       axiosClient.preFetch = newPreFetch;
       return newPreFetch;
