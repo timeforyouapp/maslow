@@ -32,7 +32,11 @@ export const apiMiddleware = (apiConfig, actionMaker) => store => next => (actio
       }
     }
 
-    console.error(error);
+    if (types.error) {
+      return next({ type: types.error, payload: error })
+    }
+
+    console.log('non captured err', error);
   });
 
 };

@@ -14,10 +14,12 @@ export { MaslowAPI } from './api';
 export { AxiosWrapper } from './api/axios';
 export { MaslowClient } from './api/client';
 export { MaslowSchema } from './api/schemas';
+export { extendFn } from './api/joi';
 export { parseOpenAPItoMaslowConfig } from './api/openapi';
 
 export * from './connectors/formConnector';
 export * from './connectors/listConnector';
+
 
 export const createActionFn = (
   indexedActions

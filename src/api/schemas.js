@@ -1,4 +1,4 @@
-import joi from 'joi-browser';
+import { joi } from './joi';
 import { ReadOnlyProp, MethodNotAFunction } from '../error';
 
 const camelize = text => text.replace(/^([A-Z])|[\s-_]+(\w)/g, (_, p1, p2) => {
